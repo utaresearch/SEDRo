@@ -23,7 +23,11 @@ public class BabyAgent : Agent
     public Transform upperArmR;
     public Transform lowerArmR;
     public Transform handR;
+    public Transform eyeL;
+    public Transform eyeR;
+
     JointDriveController m_JdController;
+    VisionController m_VisionController;
 
     Rigidbody m_HipsRb;
     Rigidbody m_ChestRb;
@@ -53,6 +57,15 @@ public class BabyAgent : Agent
         m_HipsRb = hips.GetComponent<Rigidbody>();
         m_ChestRb = chest.GetComponent<Rigidbody>();
         m_SpineRb = spine.GetComponent<Rigidbody>();
+
+        m_VisionController = GetComponent<VisionController>();
+        if (m_VisionController == null)
+        {
+            Debug.LogError("Agent doesn't have any vision controller attached.");
+        }
+
+        m_VisionController.SetupEye(eyeL);
+        m_VisionController.SetupEye(eyeR);
 
         m_ResetParams = Academy.Instance.FloatProperties;
 
@@ -167,17 +180,27 @@ public class BabyAgent : Agent
         bpDict[lowerArmL].SetJointStrength(vectorAction[++i]);
         bpDict[upperArmR].SetJointStrength(vectorAction[++i]);
         bpDict[lowerArmR].SetJointStrength(vectorAction[++i]);
+
+        var eyeDict = m_VisionController.eyeDict;
+        eyeDict[eyeL].SetEyeTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        eyeDict[eyeR].SetEyeTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
     }
 
     public override float[] Heuristic()
     {
-        var action = new float[31];
+        var action = new float[45];
         Debug.Log("Called hurestic");
 
-        for (int i = 0; i < 31; i++)
+        for (int i = 0; i < 39; i++)
         {
             action[i] = Random.Range(-1.0f, 1.0f);
         }
+        for (int i = 39; i < 45; i++)
+        {
+            action[i] = Random.Range(-1.0f, 1.0f);
+        }
+
+        //action[39] = -1;
 
         return action;
     }
