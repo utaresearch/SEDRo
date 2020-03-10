@@ -6,23 +6,14 @@ using MLAgents;
 namespace DAIVID
 {
     /// <summary>
-    /// Used to store relevant information for acting and learning for each body part in agent.
+    /// Used to store relevant information for acting and learning for eyes of agent.
     /// </summary>
     [System.Serializable]
     public class Eye
     {
         [HideInInspector] public Quaternion startingRot;
 
-        //[FormerlySerializedAs("thisVisionController")]
         [HideInInspector] public VisionController thisVisionController;
-
-        [Header("Current Joint Settings")]
-        [Space(10)]
-        public Vector3 currentEularJointRotation;
-
-        public float currentXNormalizedRot;
-        public float currentYNormalizedRot;
-        public float currentZNormalizedRot;
 
         [Header("Eye Settings")]
         [Space(10)]
@@ -38,7 +29,7 @@ namespace DAIVID
 
         public Transform transform;
         /// <summary>
-        /// Reset body part to initial configuration.
+        /// Reset eye to initial configuration.
         /// </summary>
         public void Reset()
         {
@@ -47,7 +38,7 @@ namespace DAIVID
         }
 
         /// <summary>
-        /// Apply torque according to defined goal `x, y, z` angle and force `strength`.
+        /// Change the rotation of eyeball object
         /// </summary>
         public void SetEyeTargetRotation(float x, float y, float z)
         {
@@ -59,25 +50,7 @@ namespace DAIVID
             var yRot = Mathf.Lerp(-maxLeftRotationAngle, maxRightRotationAngle, y);
             //var focalLength = Mathf.Lerp(-joint.angularZLimit.limit, joint.angularZLimit.limit, z);
 
-            //currentXNormalizedRot =
-            //    Mathf.InverseLerp(joint.lowAngularXLimit.limit, joint.highAngularXLimit.limit, xRot);
-            //currentYNormalizedRot = Mathf.InverseLerp(-joint.angularYLimit.limit, joint.angularYLimit.limit, yRot);
-            //currentZNormalizedRot = Mathf.InverseLerp(-joint.angularZLimit.limit, joint.angularZLimit.limit, zRot);
-            //transform.localRotation = transform.rotation;
             transform.localRotation = Quaternion.Euler(xRot,yRot,0);
-            //currentEularJointRotation = new Vector3(xRot, transform.rotation, zRot);
-        }
-        public void SetJointStrength(float strength)
-        {
-            //var rawVal = (strength + 1f) * 0.5f * thisJdController.maxJointForceLimit;
-            //var jd = new JointDrive
-            //{
-            //    positionSpring = thisJdController.maxJointSpring,
-            //    positionDamper = thisJdController.jointDampen,
-            //    maximumForce = rawVal
-            //};
-            //joint.slerpDrive = jd;
-            //currentStrength = jd.maximumForce;
         }
 
     }

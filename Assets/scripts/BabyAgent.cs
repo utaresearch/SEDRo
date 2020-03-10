@@ -28,6 +28,7 @@ public class BabyAgent : Agent
 
     JointDriveController m_JdController;
     VisionController m_VisionController;
+    TouchSensorController m_TouchController;
 
     Rigidbody m_HipsRb;
     Rigidbody m_ChestRb;
@@ -67,6 +68,12 @@ public class BabyAgent : Agent
         m_VisionController.SetupEye(eyeL);
         m_VisionController.SetupEye(eyeR);
 
+        m_TouchController = GetComponent<TouchSensorController>();
+        if (m_TouchController == null)
+        {
+            Debug.LogError("Agent doesn't have any Touch sensor controller attached.");
+        }
+
         m_ResetParams = Academy.Instance.FloatProperties;
 
         SetResetParameters();
@@ -103,6 +110,9 @@ public class BabyAgent : Agent
         {
             CollectObservationBodyPart(bodyPart);
         }
+
+        //Touch sensor status
+        AddVectorObs(m_TouchController.collectTouchUpdates());
     }
 
     /// <summary>
@@ -189,16 +199,18 @@ public class BabyAgent : Agent
     public override float[] Heuristic()
     {
         var action = new float[45];
-        Debug.Log("Called hurestic");
+        //Debug.Log("Called hurestic");
 
         for (int i = 0; i < 39; i++)
         {
-            action[i] = Random.Range(-1.0f, 1.0f);
+            action[i] = 0;//Random.Range(-1.0f, 1.0f);
         }
         for (int i = 39; i < 45; i++)
         {
-            action[i] = Random.Range(-1.0f, 1.0f);
+            action[i] = 0;//Random.Range(-1.0f, 1.0f);
         }
+
+        //Debug.Log("Heuristic");
 
         //action[39] = -1;
 
