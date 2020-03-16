@@ -191,9 +191,9 @@ public class BabyAgent : Agent
         bpDict[upperArmR].SetJointStrength(vectorAction[++i]);
         bpDict[lowerArmR].SetJointStrength(vectorAction[++i]);
 
-        var eyeDict = m_VisionController.eyeDict;
-        eyeDict[eyeL].SetEyeTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
-        eyeDict[eyeR].SetEyeTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+
+        
     }
 
     public override float[] Heuristic()
@@ -205,10 +205,12 @@ public class BabyAgent : Agent
         {
             action[i] = 0;//Random.Range(-1.0f, 1.0f);
         }
-        for (int i = 39; i < 45; i++)
+        for (int i = 39; i < 41; i++)
         {
-            action[i] = 0;//Random.Range(-1.0f, 1.0f);
+            action[i] =  Random.Range(-1.0f, 1.0f);
         }
+
+        action[41] = Random.Range(0f, 1.0f);    // Focal distance
 
         //Debug.Log("Heuristic");
 

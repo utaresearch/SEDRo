@@ -40,7 +40,7 @@ namespace DAIVID
         /// <summary>
         /// Change the rotation of eyeball object
         /// </summary>
-        public void SetEyeTargetRotation(float x, float y, float z)
+        internal void SetEyeTargetRotation(float x, float y, float z)
         {
             x = (x + 1f) * 0.5f;
             y = (y + 1f) * 0.5f;
@@ -50,7 +50,7 @@ namespace DAIVID
             var yRot = Mathf.Lerp(-maxLeftRotationAngle, maxRightRotationAngle, y);
             //var focalLength = Mathf.Lerp(-joint.angularZLimit.limit, joint.angularZLimit.limit, z);
 
-            transform.localRotation = Quaternion.Euler(xRot,yRot,0);
+            transform.localRotation = Quaternion.Euler(xRot, yRot, 0);
         }
 
     }
@@ -63,9 +63,16 @@ namespace DAIVID
         public float maxRightRotationAngle;
         public float maxAscendingRotationAngle;
         public float maxDescendingRotationAngle;
+        public float maxVisionDistance;
 
         public float focalLength;
         float m_FacingDot;
+
+        public Transform eyeGazeLaser;
+
+        //Left and Right lasers are used for debug/test purpose now.
+        public Transform rightLaser;
+        public Transform leftLaser;
 
         [HideInInspector] public Dictionary<Transform, Eye> eyeDict = new Dictionary<Transform, Eye>();
 
@@ -91,6 +98,50 @@ namespace DAIVID
             eyeList.Add(bp);
         }
 
-        
+        public void SetEyeRotation(Transform leftEye, Transform rightEye, float x, float y, float z)
+        {
+            //eyeDict[leftEye].SetEyeTargetRotation(x, y, z);
+            //eyeDict[rightEye].SetEyeTargetRotation(x, y, z);
+            SetGazeRotation(x, y, z);
+
+
+            Vector3 gazeLaserEndPosition = new Vector3(eyeGazeLaser.localPosition.x, eyeGazeLaser.localPosition.y, eyeGazeLaser.localPosition.z + eyeGazeLaser.localScale.y * 2);
+
+
+            Vector3 targetDir = gazeLaserEndPosition - rightEye.localPosition;
+
+            float angleRight = Vector3.Angle(Vector3.forward, targetDir.normalized);
+
+            rightLaser.localRotation = Quaternion.Euler(eyeGazeLaser.localRotation.eulerAngles.x, eyeGazeLaser.localRotation.eulerAngles.y -angleRight, eyeGazeLaser.localRotation.eulerAngles.z);
+            rightEye.localRotation = rightLaser.localRotation * Quaternion.Euler(-90, 0, 0);    //Laser angle are rotated by 90 degree. So converting towards the forward of eye
+
+            targetDir = gazeLaserEndPosition - leftEye.localPosition;
+
+            float angleLeft = Vector3.Angle(Vector3.forward, targetDir.normalized);
+
+            leftLaser.localRotation = Quaternion.Euler(eyeGazeLaser.localRotation.eulerAngles.x, eyeGazeLaser.localRotation.eulerAngles.y + angleLeft, eyeGazeLaser.localRotation.eulerAngles.z);
+            leftEye.localRotation = leftLaser.localRotation * Quaternion.Euler(-90, 0, 0);    //Laser angle are rotated by 90 degree. So converting towards the forward of eye
+            //Debug.Break();
+        }
+
+        internal void SetGazeRotation(float x, float y, float visionDistance)
+        {
+            x = (x + 1f) * 0.5f;
+            y = (y + 1f) * 0.5f;
+            //z = (z + 1f) * 0.5f;
+
+            var xRot = Mathf.Lerp(-maxAscendingRotationAngle, maxDescendingRotationAngle, x);
+            var yRot = Mathf.Lerp(-maxLeftRotationAngle, maxRightRotationAngle, y);
+            //var focalLength = Mathf.Lerp(-joint.angularZLimit.limit, joint.angularZLimit.limit, z);
+            if(visionDistance * maxVisionDistance < 0)
+            {
+                Debug.LogError("ScaleMode negative" + visionDistance + "::" + maxVisionDistance);
+            }
+
+            eyeGazeLaser.localRotation = Quaternion.Euler(xRot + 90, yRot, 0);
+            eyeGazeLaser.localScale = new Vector3(eyeGazeLaser.localScale.x, visionDistance * maxVisionDistance, eyeGazeLaser.localScale.z);
+        }
+
+
     }
 }
