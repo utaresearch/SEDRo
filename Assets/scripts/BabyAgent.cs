@@ -112,7 +112,7 @@ public class BabyAgent : Agent
         }
 
         //Touch sensor status
-        AddVectorObs(m_TouchController.collectTouchUpdates());
+      //  AddVectorObs(m_TouchController.collectTouchUpdates());
     }
 
     /// <summary>
@@ -203,7 +203,7 @@ public class BabyAgent : Agent
 
         for (int i = 0; i < 39; i++)
         {
-            action[i] = 0;//Random.Range(-1.0f, 1.0f);
+            action[i] = Random.Range(-1.0f, 1.0f);
         }
         for (int i = 39; i < 41; i++)
         {
