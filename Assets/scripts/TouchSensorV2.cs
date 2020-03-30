@@ -68,6 +68,7 @@ public class TouchSensorV2 : MonoBehaviour
         for (int i = 0; i < noOfSensorZ - 1; i++)
         {
             GameObject s = CreateSeparator();
+            s.transform.localRotation = Quaternion.Euler(new Vector3(0, 0, s.transform.parent.transform.localRotation.z));
             s.transform.localPosition = new Vector3(0, 0, meshBounds.size.z / noOfSensorZ * (i + 1) - meshBounds.size.z / 2);
         }
 
