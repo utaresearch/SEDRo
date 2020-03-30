@@ -28,7 +28,8 @@ public class BabyAgent : Agent
 
     JointDriveController m_JdController;
     VisionController m_VisionController;
-    TouchSensorController m_TouchController;
+    //TouchSensorController m_TouchController;
+    TouchSensorControllerV2 m_TouchController;
 
     Rigidbody m_HipsRb;
     Rigidbody m_ChestRb;
@@ -68,7 +69,7 @@ public class BabyAgent : Agent
         m_VisionController.SetupEye(eyeL);
         m_VisionController.SetupEye(eyeR);
 
-        m_TouchController = GetComponent<TouchSensorController>();
+        m_TouchController = GetComponent<TouchSensorControllerV2>();//GetComponent<TouchSensorController>();
         if (m_TouchController == null)
         {
             Debug.LogError("Agent doesn't have any Touch sensor controller attached.");
@@ -78,6 +79,14 @@ public class BabyAgent : Agent
 
         SetResetParameters();
 
+    }
+
+    private void Start()
+    {
+        if (m_TouchController != null)
+        {
+            GetComponent<BehaviorParameters>().brainParameters.vectorObservationSize += m_TouchController.GetSensorCounts(m_JdController.bodyPartsDict.Keys);
+        }
     }
 
     public void SetTorsoMass()
@@ -112,7 +121,10 @@ public class BabyAgent : Agent
         }
 
         //Touch sensor status
-      //  AddVectorObs(m_TouchController.collectTouchUpdates());
+        if (m_TouchController != null)
+        {
+            AddVectorObs(m_TouchController.CollectTouchUpdatesForBodyParts(m_JdController.bodyPartsDict.Keys));
+        }
     }
 
     /// <summary>
@@ -203,7 +215,7 @@ public class BabyAgent : Agent
 
         for (int i = 0; i < 39; i++)
         {
-            action[i] = Random.Range(-1.0f, 1.0f);
+            action[i] = 0; Random.Range(-1.0f, 1.0f);
         }
         for (int i = 39; i < 41; i++)
         {
