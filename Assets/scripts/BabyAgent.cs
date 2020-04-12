@@ -26,6 +26,30 @@ public class BabyAgent : Agent
     public Transform eyeL;
     public Transform eyeR;
 
+    public Transform thumR;
+    public Transform indR;
+    public Transform midR;
+    public Transform rinR;
+    public Transform lilR;
+
+    public Transform thumiR;
+    public Transform indiR;
+    public Transform midiR;
+    public Transform riniR;
+    public Transform liliR;
+
+    public Transform thumL;
+    public Transform indL;
+    public Transform midL;
+    public Transform rinL;
+    public Transform lilL;
+
+    public Transform thumiL;
+    public Transform indiL;
+    public Transform midiL;
+    public Transform riniL;
+    public Transform liliL;
+
     JointDriveController m_JdController;
     VisionController m_VisionController;
     //TouchSensorController m_TouchController;
@@ -59,6 +83,30 @@ public class BabyAgent : Agent
         m_HipsRb = hips.GetComponent<Rigidbody>();
         m_ChestRb = chest.GetComponent<Rigidbody>();
         m_SpineRb = spine.GetComponent<Rigidbody>();
+
+        //right fingers
+        m_JdController.SetupBodyPart(thumR);
+        m_JdController.SetupBodyPart(thumiR);
+        m_JdController.SetupBodyPart(indR);
+        m_JdController.SetupBodyPart(indiR);
+        m_JdController.SetupBodyPart(midR);
+        m_JdController.SetupBodyPart(midiR);
+        m_JdController.SetupBodyPart(rinR);
+        m_JdController.SetupBodyPart(riniR);
+        m_JdController.SetupBodyPart(lilR);
+        m_JdController.SetupBodyPart(liliR);
+
+        //left fingers
+        m_JdController.SetupBodyPart(thumL);
+        m_JdController.SetupBodyPart(thumiL);
+        m_JdController.SetupBodyPart(indL);
+        m_JdController.SetupBodyPart(indiL);
+        m_JdController.SetupBodyPart(midL);
+        m_JdController.SetupBodyPart(midiL);
+        m_JdController.SetupBodyPart(rinL);
+        m_JdController.SetupBodyPart(riniL);
+        m_JdController.SetupBodyPart(lilL);
+        m_JdController.SetupBodyPart(liliL);
 
         m_VisionController = GetComponent<VisionController>();
         if (m_VisionController == null)
@@ -119,6 +167,9 @@ public class BabyAgent : Agent
         {
             CollectObservationBodyPart(bodyPart);
         }
+
+        //grab object status
+        //AddVectorObs(m_GrabObservation.CollectGrabstatus());
 
         //Touch sensor status
         if (m_TouchController != null)
@@ -205,12 +256,38 @@ public class BabyAgent : Agent
 
         m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
-        
+        //Right hand
+        bpDict[handR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[thumR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[thumiR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[indR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[indiR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[midR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[midiR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[rinR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[riniR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[lilR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[liliR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+
+        //Left hand
+        bpDict[handL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[thumL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[thumiL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[indL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[indiL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[midL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[midiL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[rinL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[riniL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[lilL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        bpDict[liliL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+
+
     }
 
     public override float[] Heuristic()
     {
-        var action = new float[45];
+        var action = new float[69];
         //Debug.Log("Called hurestic");
 
         for (int i = 0; i < 39; i++)
@@ -222,7 +299,13 @@ public class BabyAgent : Agent
             action[i] =  Random.Range(-1.0f, 1.0f);
         }
 
-        action[41] = Random.Range(0f, 1.0f);    // Focal distance
+        action[41] = Random.Range(0f, 1.0f);  // Focal distance
+
+        
+        for (int i = 42; i < 69; i++)
+        {
+            action[i] = Random.Range(-1.0f, 1.0f); //1;
+        }
 
         //Debug.Log("Heuristic");
 
