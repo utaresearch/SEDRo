@@ -197,7 +197,7 @@ public class TouchSensorV2 : MonoBehaviour
         //print((contact.thisCollider.transform.localPosition - contact.thisCollider.transform.InverseTransformPoint(contact.point)).normalized);
 
         //// Visualize the contact point
-        Debug.DrawRay(contact.point, contact.normal, Color.blue);
+        //Debug.DrawRay(contact.point, contact.normal, Color.blue);
         return sensorPos;
     }
 

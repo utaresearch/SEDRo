@@ -28,6 +28,9 @@ namespace DAIVID
         public float currentYNormalizedRot;
         public float currentZNormalizedRot;
 
+        //This limit of change is in degree
+        private float maxAllowableChangePerStep = 5;
+
         [Header("Other Debug Info")]
         [Space(10)]
         public Vector3 currentJointForce;
@@ -53,15 +56,23 @@ namespace DAIVID
         /// <summary>
         /// Apply torque according to defined goal `x, y, z` angle and force `strength`.
         /// </summary>
+        /// 
+
         public void SetJointTargetRotation(float x, float y, float z)
         {
             x = (x + 1f) * 0.5f;
             y = (y + 1f) * 0.5f;
             z = (z + 1f) * 0.5f;
 
-            var xRot = Mathf.Lerp(joint.lowAngularXLimit.limit, joint.highAngularXLimit.limit, x);
-            var yRot = Mathf.Lerp(-joint.angularYLimit.limit, joint.angularYLimit.limit, y);
-            var zRot = Mathf.Lerp(-joint.angularZLimit.limit, joint.angularZLimit.limit, z);
+            Vector3 prev = currentEularJointRotation;
+
+            var xRot = Mathf.Lerp(-maxAllowableChangePerStep, maxAllowableChangePerStep, x);
+            var yRot = Mathf.Lerp(-maxAllowableChangePerStep, maxAllowableChangePerStep, y);
+            var zRot = Mathf.Lerp(-maxAllowableChangePerStep, maxAllowableChangePerStep, z);
+
+            xRot = Mathf.Clamp(prev.x + xRot, joint.lowAngularXLimit.limit, joint.highAngularXLimit.limit);
+            yRot = Mathf.Clamp(prev.y + yRot, -joint.angularYLimit.limit, joint.angularYLimit.limit);
+            zRot = Mathf.Clamp(prev.z + zRot, -joint.angularZLimit.limit, joint.angularZLimit.limit);
 
             currentXNormalizedRot =
                 Mathf.InverseLerp(joint.lowAngularXLimit.limit, joint.highAngularXLimit.limit, xRot);
@@ -71,6 +82,7 @@ namespace DAIVID
             joint.targetRotation = Quaternion.Euler(xRot, yRot, zRot);
             currentEularJointRotation = new Vector3(xRot, yRot, zRot);
         }
+
         public void SetJointStrength(float strength)
         {
             var rawVal = (strength + 1f) * 0.5f * thisJdController.maxJointForceLimit;

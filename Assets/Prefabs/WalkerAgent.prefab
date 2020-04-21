@@ -1911,7 +1911,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &50010516393953125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2038,7 +2038,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4037284717919073621
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -2171,6 +2171,7 @@ GameObject:
   - component: {fileID: 7425015947554820607}
   - component: {fileID: 3774375580442819916}
   - component: {fileID: 5469290704618977591}
+  - component: {fileID: 4190296319980185315}
   m_Layer: 0
   m_Name: WalkerAgent
   m_TagString: Untagged
@@ -2216,9 +2217,9 @@ MonoBehaviour:
     vectorActionSize: 41000000
     vectorActionDescriptions: []
     vectorActionSpaceType: 1
-  m_Model: {fileID: 11400000, guid: 4e86a19e012da43bfa5ab97ae8089b98, type: 3}
+  m_Model: {fileID: 11400000, guid: ec02cdcc1cd2d4721b5fa64059e82014, type: 3}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: Baby
   m_TeamID: 0
   m_UseChildSensors: 1
@@ -2291,6 +2292,7 @@ MonoBehaviour:
   rin2R: {fileID: 7566117162436312082}
   lil1R: {fileID: 7566117161800953544}
   lil2R: {fileID: 7566117161905356419}
+  test: {fileID: 0}
 --- !u!114 &4188689080286921367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2449,6 +2451,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76defb84f768aa84a9e566745fa71670, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!95 &4190296319980185315
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4188689080286921361}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &4188714898910625961
 GameObject:
   m_ObjectHideFlags: 0
@@ -2567,7 +2588,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4036828474576798541
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3194,7 +3215,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4037081362797794109
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3506,7 +3527,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4037254095104216999
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -3950,7 +3971,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4051253233190613503
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -4891,7 +4912,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4037321590658292761
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -5228,7 +5249,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4037034884623270807
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -5450,7 +5471,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4037073961327301463
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -5671,7 +5692,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &4036776493095364973
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -6044,7 +6065,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -6250,7 +6271,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -6432,22 +6453,22 @@ ConfigurableJoint:
     spring: 0
     damper: 0
   m_LowAngularXLimit:
-    limit: -30
+    limit: -5.892181
     bounciness: 0
     contactDistance: 0
   m_HighAngularXLimit:
-    limit: 30
+    limit: 91.761086
     bounciness: 0
     contactDistance: 0
   m_AngularYZLimitSpring:
     spring: 0
     damper: 0
   m_AngularYLimit:
-    limit: 0
+    limit: 3
     bounciness: 0
     contactDistance: 0
   m_AngularZLimit:
-    limit: 0
+    limit: 3
     bounciness: 0
     contactDistance: 0
   m_TargetPosition: {x: 0, y: 0, z: 0}
@@ -6486,7 +6507,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -6907,11 +6928,11 @@ ConfigurableJoint:
     spring: 0
     damper: 0
   m_LowAngularXLimit:
-    limit: -30
+    limit: -5.4352713
     bounciness: 0
     contactDistance: 0
   m_HighAngularXLimit:
-    limit: 30
+    limit: 81.74615
     bounciness: 0
     contactDistance: 0
   m_AngularYZLimitSpring:
@@ -6961,7 +6982,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -7166,7 +7187,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -7371,7 +7392,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -7576,7 +7597,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -7842,7 +7863,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -8077,7 +8098,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -8404,7 +8425,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -8610,7 +8631,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -8815,7 +8836,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -9021,7 +9042,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -9555,7 +9576,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -9761,7 +9782,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -9967,7 +9988,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -10202,7 +10223,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -10529,7 +10550,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -10734,7 +10755,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
@@ -10940,7 +10961,7 @@ ConfigurableJoint:
     positionDamper: 100
     maximumForce: 25000
   m_ProjectionMode: 1
-  m_ProjectionDistance: 0.1
+  m_ProjectionDistance: 0.001
   m_ProjectionAngle: 180
   m_ConfiguredInWorldSpace: 0
   m_SwapBodies: 0
