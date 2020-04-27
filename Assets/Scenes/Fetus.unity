@@ -142,7 +142,7 @@ Light:
   m_Color: {r: 0.9433962, g: 0.58678395, b: 0.24474904, a: 1}
   m_Intensity: 1
   m_Range: 100
-  m_SpotAngle: 30
+  m_SpotAngle: 179
   m_CookieSize: 10
   m_Shadows:
     m_Type: 0
@@ -653,7 +653,7 @@ PrefabInstance:
     - target: {fileID: 3184113372086087637, guid: 953a328029fff5447baaf40f29b07ec5,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.026047
       objectReference: {fileID: 0}
     - target: {fileID: 3184113372086087637, guid: 953a328029fff5447baaf40f29b07ec5,
         type: 3}
@@ -699,6 +699,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3184113372086087637, guid: 953a328029fff5447baaf40f29b07ec5,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.94865656
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 953a328029fff5447baaf40f29b07ec5, type: 3}
