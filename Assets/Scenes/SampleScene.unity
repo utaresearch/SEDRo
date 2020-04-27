@@ -2745,6 +2745,9 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+        type: 3}
+      propertyPath: m_CollisionDetection
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 7566117160948340194, guid: a41ebf641f8314e889ec779d7a0169ad,
         type: 3}
@@ -2786,7 +2789,6 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.y
       value: -0.41000384
       objectReference: {fileID: 0}
-<<<<<<< HEAD
     - target: {fileID: 7566117161263620113, guid: a41ebf641f8314e889ec779d7a0169ad,
         type: 3}
       propertyPath: m_Radius
@@ -2856,12 +2858,12 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0.006001014
-=======
+      objectReference: {fileID: 0}
+
     - target: {fileID: 7566117161263620118, guid: a41ebf641f8314e889ec779d7a0169ad,
         type: 3}
       propertyPath: m_CollisionDetection
       value: 2
->>>>>>> 154c915e0ef2cb606264770f916d82258b314fd8
       objectReference: {fileID: 0}
     - target: {fileID: 7566117161263620119, guid: a41ebf641f8314e889ec779d7a0169ad,
         type: 3}
@@ -3038,7 +3040,6 @@ PrefabInstance:
       propertyPath: m_ConnectedAnchor.x
       value: -0.04493278
       objectReference: {fileID: 0}
-<<<<<<< HEAD
     - target: {fileID: 7566117162098306354, guid: a41ebf641f8314e889ec779d7a0169ad,
         type: 3}
       propertyPath: m_Enabled
@@ -3053,12 +3054,10 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Center.z
       value: -0.042162992
-=======
     - target: {fileID: 7566117162098306355, guid: a41ebf641f8314e889ec779d7a0169ad,
         type: 3}
       propertyPath: m_CollisionDetection
       value: 2
->>>>>>> 154c915e0ef2cb606264770f916d82258b314fd8
       objectReference: {fileID: 0}
     - target: {fileID: 7566117162247088433, guid: a41ebf641f8314e889ec779d7a0169ad,
         type: 3}
