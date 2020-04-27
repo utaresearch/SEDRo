@@ -16,18 +16,19 @@ public class GrabObserver : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (R.transform.GetComponent<fjGrab>().isHolding)
-        { obserVect[0] = 1f; }
+     /*   if (R.transform.GetComponent<fjGrab>().isHolding)
+        { }
         else { obserVect[0] = 0f; }
         if (L.transform.GetComponent<fjGrab>().isHolding)
-        { obserVect[1] = 1f; }
+        { }
         else { obserVect[1] = 0f; }
-
+        */
     }
 
     public float[] CollectGrabstatus()
     {
+        obserVect[0] = 1f;
+        obserVect[1] = 1f;
         return obserVect;
-        
     }
 }

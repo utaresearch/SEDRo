@@ -74,6 +74,10 @@ namespace DAIVID
         public Transform rightLaser;
         public Transform leftLaser;
 
+        //This limit of change is in degree
+        private float maxAllowableChangePerStep = 5;
+        private Vector3 currentEularGazeRotation;
+
         [HideInInspector] public Dictionary<Transform, Eye> eyeDict = new Dictionary<Transform, Eye>();
 
         [HideInInspector] public List<Eye> eyeList = new List<Eye>();
@@ -130,8 +134,16 @@ namespace DAIVID
             y = (y + 1f) * 0.5f;
             //z = (z + 1f) * 0.5f;
 
-            var xRot = Mathf.Lerp(-maxAscendingRotationAngle, maxDescendingRotationAngle, x);
-            var yRot = Mathf.Lerp(-maxLeftRotationAngle, maxRightRotationAngle, y);
+            Vector3 prev = currentEularGazeRotation;
+
+            var xRot = Mathf.Lerp(-maxAllowableChangePerStep, maxAllowableChangePerStep, x);
+            var yRot = Mathf.Lerp(-maxAllowableChangePerStep, maxAllowableChangePerStep, y);
+
+            xRot = Mathf.Clamp(prev.x + xRot, maxAscendingRotationAngle, maxDescendingRotationAngle);
+            yRot = Mathf.Clamp(prev.y + yRot, -maxLeftRotationAngle, maxRightRotationAngle);
+
+            //var xRot = Mathf.Lerp(-maxAscendingRotationAngle, maxDescendingRotationAngle, x);
+            //var yRot = Mathf.Lerp(-maxLeftRotationAngle, maxRightRotationAngle, y);
             //var focalLength = Mathf.Lerp(-joint.angularZLimit.limit, joint.angularZLimit.limit, z);
             if(visionDistance * maxVisionDistance < 0)
             {
@@ -140,6 +152,7 @@ namespace DAIVID
 
             eyeGazeLaser.localRotation = Quaternion.Euler(xRot + 90, yRot, 0);
             eyeGazeLaser.localScale = new Vector3(eyeGazeLaser.localScale.x, visionDistance * maxVisionDistance, eyeGazeLaser.localScale.z);
+            currentEularGazeRotation = new Vector3(xRot, yRot, 0);
         }
 
 

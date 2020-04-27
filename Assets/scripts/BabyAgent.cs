@@ -231,6 +231,23 @@ public class BabyAgent : Agent
         var bpDict = m_JdController.bodyPartsDict;
         var i = -1;
 
+        //spine.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+
+        //thighL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
+        //thighR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
+        //shinL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
+        //shinR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
+        //footR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        //footL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+
+
+        //upperArmL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
+        //upperArmR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
+        //lowerArmL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
+        //lowerArmR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
+        //head.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
+
+
         bpDict[chest].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
         bpDict[spine].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
@@ -291,7 +308,6 @@ public class BabyAgent : Agent
 
         m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
-
     }
 
     public override float[] Heuristic()
@@ -301,7 +317,7 @@ public class BabyAgent : Agent
 
         for (int i = 0; i < 39; i++)
         {
-            action[i] = 0;// Random.Range(-1.0f, 1.0f);
+            action[i] = Random.Range(-1.0f, 1f)*.7f;//*100;
         }
         //Hands
         for (int i = 39; i < 63; i++)
@@ -318,7 +334,7 @@ public class BabyAgent : Agent
         //Debug.Log("Heuristic");
 
         //action[39] = -1;
-        Time.timeScale = 0.3f;
+        //Time.timeScale = 0.3f;
 
         return action;
     }
