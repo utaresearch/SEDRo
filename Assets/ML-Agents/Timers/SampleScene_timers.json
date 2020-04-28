@@ -1,4 +1,1 @@
-
-
-{"count":1,"gauges":{},"self":32.5909536,"total":33.17358,"children":{"AgentSendState":{"count":1637,"self":0.081177,"total":0.27968499999999996,"children":{"CollectObservations":{"count":328,"self":0.198508,"total":0.198508,"children":null}}},"DecideAction":{"count":1637,"self":0.043720999999999996,"total":0.043720999999999996,"children":null},"AgentAct":{"count":1637,"self":0.258229,"total":0.258229,"children":null}}}
-
+{"count":1,"gauges":{},"self":35.0889664,"total":35.532576,"children":{"AgentSendState":{"count":1480,"self":0.064334,"total":0.22058,"children":{"CollectObservations":{"count":296,"self":0.156246,"total":0.156246,"children":null}}},"DecideAction":{"count":1480,"self":0.034885,"total":0.034885,"children":null},"AgentAct":{"count":1480,"self":0.18640099999999998,"total":0.18640099999999998,"children":null}}}
