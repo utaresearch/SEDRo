@@ -7,7 +7,7 @@
 ## Getting Started
 
 ### Requirements
-- Unity 2018.4
+- Unity 2018.4.18f1
 - Unity ML agents Release 3 
 
 ### Installing SEDRo in your local machine
