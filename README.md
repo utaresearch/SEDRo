@@ -16,6 +16,7 @@ To lauch **SEDRo** in your local machine, follow the steps below:
 
 1. Clone SEDRo repository into your local machine.
     * Use "Clone with SSH" option to avoid credential failure issues.
+    * You can use GitHub Desktop app to avoid credential failure issues. 
     * If you do not have git-lfs enabled, do so to avoid invalid image files.
 2. Clone the Unity ML-agents from [here](https://github.com/Unity-Technologies/ml-agents/tree/master).
     * Checkout "release_3_branch".
