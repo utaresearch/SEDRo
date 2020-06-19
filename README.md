@@ -6,6 +6,10 @@
 
 ## Getting Started
 
+### Requirements
+- Unity 2018.4
+- Unity ML agents Release 3 
+
 ### Installing SEDRo in your local machine
 
 To lauch **SEDRo** in your local machine, follow the steps below:
