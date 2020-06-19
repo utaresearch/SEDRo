@@ -1,8 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using MLAgents.Sensor;
-using MLAgents;
+using Unity.MLAgents.Sensors;
+using Unity.MLAgents;
+using Unity.MLAgents.Policies;
 using DAIVID;
 
 public class BabyAgent : Agent
@@ -69,8 +70,8 @@ public class BabyAgent : Agent
     Rigidbody m_ChestRb;
     Rigidbody m_SpineRb;
 
-    IFloatProperties m_ResetParams;
-    public override void InitializeAgent()
+    EnvironmentParameters m_ResetParams;
+    public override void Initialize()
     {
         m_JdController = GetComponent<JointDriveController>();
         m_JdController.SetupBodyPart(hips);
@@ -133,7 +134,7 @@ public class BabyAgent : Agent
             Debug.LogError("Agent doesn't have any Touch sensor controller attached.");
         }
 
-        m_ResetParams = Academy.Instance.FloatProperties;
+        m_ResetParams = Academy.Instance.EnvironmentParameters;
 
         SetResetParameters();
 
@@ -143,15 +144,15 @@ public class BabyAgent : Agent
     {
         if (m_TouchController != null)
         {
-            GetComponent<BehaviorParameters>().brainParameters.vectorObservationSize += m_TouchController.GetSensorCounts(m_JdController.bodyPartsDict.Keys);
+            GetComponent<BehaviorParameters>().BrainParameters.VectorObservationSize += m_TouchController.GetSensorCounts(m_JdController.bodyPartsDict.Keys);
         }
     }
 
     public void SetTorsoMass()
     {
-        m_ChestRb.mass = m_ResetParams.GetPropertyWithDefault("chest_mass", 5);
-        m_SpineRb.mass = m_ResetParams.GetPropertyWithDefault("spine_mass", 7);
-        m_HipsRb.mass = m_ResetParams.GetPropertyWithDefault("hip_mass", 6);
+        m_ChestRb.mass = m_ResetParams.GetWithDefault("chest_mass", 5);
+        m_SpineRb.mass = m_ResetParams.GetWithDefault("spine_mass", 7);
+        m_HipsRb.mass = m_ResetParams.GetWithDefault("hip_mass", 6);
     }
 
     public void SetResetParameters()
@@ -162,19 +163,19 @@ public class BabyAgent : Agent
     /// <summary>
     /// Loop over body parts to add them to observation.
     /// </summary>
-    public override void CollectObservations()
+    public override void CollectObservations(VectorSensor sensor)
     {
         //babyHeadCam.
         m_JdController.GetCurrentJointForces();
 
         //sensor.AddObservation(m_DirToTarget.normalized);
-        AddVectorObs(m_JdController.bodyPartsDict[hips].rb.position);
-        AddVectorObs(hips.forward);
-        AddVectorObs(hips.up);
+        sensor.AddObservation(m_JdController.bodyPartsDict[hips].rb.position);
+        sensor.AddObservation(hips.forward);
+        sensor.AddObservation(hips.up);
 
         foreach (var bodyPart in m_JdController.bodyPartsDict.Values)
         {
-            CollectObservationBodyPart(bodyPart);
+            CollectObservationBodyPart(sensor, bodyPart);
         }
 
         //grab object status
@@ -183,35 +184,35 @@ public class BabyAgent : Agent
         //Touch sensor status
         if (m_TouchController != null)
         {
-            AddVectorObs(m_TouchController.CollectTouchUpdatesForBodyParts(m_JdController.bodyPartsDict.Keys));
+            sensor.AddObservation(m_TouchController.CollectTouchUpdatesForBodyParts(m_JdController.bodyPartsDict.Keys));
         }
     }
 
     /// <summary>
     /// Add relevant information on each body part to observations.
     /// </summary>
-    public void CollectObservationBodyPart(BodyPart bp)
+    public void CollectObservationBodyPart(VectorSensor sensor, BodyPart bp)
     {
         var rb = bp.rb;
-        AddVectorObs(rb.velocity);
-        AddVectorObs(rb.angularVelocity);
+        sensor.AddObservation(rb.velocity);
+        sensor.AddObservation(rb.angularVelocity);
         var localPosRelToHips = hips.InverseTransformPoint(rb.position);
-        AddVectorObs(localPosRelToHips);
+        sensor.AddObservation(localPosRelToHips);
 
 
         if (bp.rb.transform != hips && bp.rb.transform != head)
         {
-            AddVectorObs(bp.currentXNormalizedRot);
-            AddVectorObs(bp.currentYNormalizedRot);
-            AddVectorObs(bp.currentZNormalizedRot);
-            AddVectorObs(bp.currentStrength / m_JdController.maxJointForceLimit);
+            sensor.AddObservation(bp.currentXNormalizedRot);
+            sensor.AddObservation(bp.currentYNormalizedRot);
+            sensor.AddObservation(bp.currentZNormalizedRot);
+            sensor.AddObservation(bp.currentStrength / m_JdController.maxJointForceLimit);
         }
     }
 
     /// <summary>
     /// Loop over body parts and reset them to initial conditions.
     /// </summary>
-    public override void AgentReset()
+    public override void OnEpisodeBegin()
     {
         //if (m_DirToTarget != Vector3.zero)
         //{
@@ -225,7 +226,7 @@ public class BabyAgent : Agent
         SetResetParameters();
     }
 
-    public override void AgentAction(float[] vectorAction)
+    public override void OnActionReceived(float[] vectorAction)
     {
         //Debug.Break();
         var bpDict = m_JdController.bodyPartsDict;
@@ -305,38 +306,36 @@ public class BabyAgent : Agent
         bpDict[rin2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
         bpDict[lil1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
         bpDict[lil2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        Debug.Log("Index " + i);
 
         m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
     }
 
-    public override float[] Heuristic()
+    public override void Heuristic(float[] actionsOut)
     {
-        var action = new float[66];
         //Debug.Log("Called hurestic");
 
         for (int i = 0; i < 39; i++)
         {
-            action[i] = Random.Range(-1.0f, 1f)*.7f;//*100;
+            actionsOut[i] = Random.Range(-1.0f, 1f)*.7f;//*100;
         }
         //Hands
         for (int i = 39; i < 63; i++)
         {
-            action[i] = Random.Range(-1.0f, 1.0f); //1;
+            actionsOut[i] = Random.Range(-1.0f, 1.0f); //1;
         }
         //Eyes
         for (int i = 63; i < 65; i++)
         {
-            action[i] = Random.Range(-1.0f, 1.0f);
+            actionsOut[i] = Random.Range(-1.0f, 1.0f);
         }
 
-        action[65] = Random.Range(0f, 1.0f);  // Focal distance
+        actionsOut[65] = Random.Range(0f, 1.0f);  // Focal distance
         //Debug.Log("Heuristic");
 
         //action[39] = -1;
         //Time.timeScale = 0.3f;
-
-        return action;
     }
 }
 

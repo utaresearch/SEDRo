@@ -2212,17 +2212,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    vectorObservationSize: 2579
-    numStackedVectorObservations: 1
-    vectorActionSize: 41000000
-    vectorActionDescriptions: []
-    vectorActionSpaceType: 1
+    VectorObservationSize: 2579
+    NumStackedVectorObservations: 1
+    VectorActionSize: 42000000
+    VectorActionDescriptions: []
+    VectorActionSpaceType: 1
   m_Model: {fileID: 11400000, guid: ec02cdcc1cd2d4721b5fa64059e82014, type: 3}
   m_InferenceDevice: 0
   m_BehaviorType: 1
   m_BehaviorName: Baby
-  m_TeamID: 0
+  TeamId: 0
   m_UseChildSensors: 1
+  m_ObservableAttributeHandling: 0
 --- !u!114 &6364140737155334589
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2236,8 +2237,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DecisionPeriod: 5
-  RepeatAction: 1
-  offsetStep: 0
+  TakeActionsBetweenDecisions: 1
 --- !u!114 &4188689080286921364
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2253,7 +2253,7 @@ MonoBehaviour:
   agentParameters:
     maxStep: 0
   hasUpgradedFromAgentParameters: 1
-  maxStep: 5000
+  MaxStep: 5000
   hips: {fileID: 4190659011701403891}
   chest: {fileID: 4190913880929092109}
   spine: {fileID: 4194865042944950929}
@@ -2292,7 +2292,6 @@ MonoBehaviour:
   rin2R: {fileID: 7566117162436312082}
   lil1R: {fileID: 7566117161800953544}
   lil2R: {fileID: 7566117161905356419}
-  test: {fileID: 0}
 --- !u!114 &4188689080286921367
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2343,12 +2342,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 2153781891285232553}
-  sensorName: CommonCentralCam
-  width: 84
-  height: 84
-  grayscale: 0
-  compression: 1
+  m_Camera: {fileID: 2153781891285232553}
+  m_SensorName: CommonCentralCam
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 0
+  m_Compression: 1
 --- !u!114 &4188689080286921366
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2361,12 +2360,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 2153781893264848190}
-  sensorName: CommonPeripheralCam
-  width: 84
-  height: 84
-  grayscale: 0
-  compression: 1
+  m_Camera: {fileID: 2153781893264848190}
+  m_SensorName: CommonPeripheralCam
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 0
+  m_Compression: 1
 --- !u!114 &6612700599406394504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2379,12 +2378,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 2153781892308875789}
-  sensorName: LeftCentralCam
-  width: 84
-  height: 84
-  grayscale: 0
-  compression: 1
+  m_Camera: {fileID: 2153781892308875789}
+  m_SensorName: LeftCentralCam
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 0
+  m_Compression: 1
 --- !u!114 &6150392030049417797
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2397,12 +2396,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 2153781892330738364}
-  sensorName: LeftPeripheralCam
-  width: 84
-  height: 84
-  grayscale: 0
-  compression: 1
+  m_Camera: {fileID: 2153781892330738364}
+  m_SensorName: LeftPeripheralCam
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 0
+  m_Compression: 1
 --- !u!114 &7425015947554820607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2415,12 +2414,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 2153781892756400972}
-  sensorName: RightCentralCam
-  width: 84
-  height: 84
-  grayscale: 0
-  compression: 1
+  m_Camera: {fileID: 2153781892756400972}
+  m_SensorName: RightCentralCam
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 0
+  m_Compression: 1
 --- !u!114 &3774375580442819916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2433,12 +2432,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  camera: {fileID: 2153781892937202433}
-  sensorName: RightPeripheralCam
-  width: 84
-  height: 84
-  grayscale: 0
-  compression: 1
+  m_Camera: {fileID: 2153781892937202433}
+  m_SensorName: RightPeripheralCam
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 0
+  m_Compression: 1
 --- !u!114 &5469290704618977591
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6670,7 +6669,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0.9999993, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.04473241, y: -0.94872504, z: -0.0018729076}
+  m_ConnectedAnchor: {x: 0.055549655, y: -0.94872504, z: -0.0011600204}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 0
@@ -7317,7 +7316,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 1.0000004, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.38816774, y: -0.31036064, z: -0.08342436}
+  m_ConnectedAnchor: {x: 0.37843686, y: -0.30890402, z: -0.021282984}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 0, z: 1}
   m_XMotion: 0
@@ -7522,7 +7521,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 1.0000002, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.46397543, y: 0.45043087, z: 0.21162505}
+  m_ConnectedAnchor: {x: -0.479843, y: 0.44907323, z: 0.13885213}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 0, z: 1}
   m_XMotion: 0
@@ -8639,7 +8638,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 1.0000004, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.122012325, y: -0.6994635, z: 0.09879387}
+  m_ConnectedAnchor: {x: -0.13511774, y: -0.6996893, z: 0.08044945}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 0, z: 1}
   m_XMotion: 0
@@ -10025,7 +10024,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 1.0000004, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -0.38938242, y: -0.55000937, z: 0.1750737}
+  m_ConnectedAnchor: {x: -0.4039564, y: -0.5511226, z: 0.114462204}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 0, z: 1}
   m_XMotion: 0
@@ -10435,7 +10434,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 1.0000004, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: 0.13890186, y: -0.6320145, z: 0.007974509}
+  m_ConnectedAnchor: {x: 0.12753107, y: -0.6313792, z: 0.03083363}
   serializedVersion: 2
   m_SecondaryAxis: {x: 0, y: 0, z: 1}
   m_XMotion: 0
