@@ -226,87 +226,114 @@ public class BabyAgent : Agent
         SetResetParameters();
     }
 
+    private float TORQUE_SCALE = .15f;
+
     public override void OnActionReceived(float[] vectorAction)
     {
         //Debug.Break();
         var bpDict = m_JdController.bodyPartsDict;
         var i = -1;
 
-        //spine.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        spine.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE);
 
-        //thighL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
-        //thighR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
-        //shinL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
-        //shinR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
-        //footR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
-        //footL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
-
-
-        //upperArmL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
-        //upperArmR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
-        //lowerArmL.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
-        //lowerArmR.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], 0, 0);
-        //head.GetComponent<Rigidbody>().AddTorque(vectorAction[++i], vectorAction[++i], 0);
+        thighL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
+        thighR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
+        shinL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
+        shinR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
+        footR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
+        footL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
 
 
-        bpDict[chest].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
-        bpDict[spine].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        upperArmL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        upperArmR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        lowerArmL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
+        lowerArmR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
+        head.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 20 * TORQUE_SCALE, vectorAction[++i] * 20 * TORQUE_SCALE, 0);
 
-        bpDict[thighL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
-        bpDict[thighR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
-        bpDict[shinL].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[shinR].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[footR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
-        bpDict[footL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        ////Left hand
+        handL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        //thum1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //thum2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //ind1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //ind2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //mid1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //mid2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //rin1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //rin2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //lil1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //lil2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+
+        //////Right hand
+        handR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        //thum1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //thum2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //ind1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //ind2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //mid1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //mid2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //rin1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //rin2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //lil1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        //lil2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
 
 
-        bpDict[upperArmL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
-        bpDict[upperArmR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
-        bpDict[lowerArmL].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[lowerArmR].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[head].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        //bpDict[chest].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        //bpDict[spine].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
-        //update joint strength settings
-        bpDict[chest].SetJointStrength(vectorAction[++i]);
-        bpDict[spine].SetJointStrength(vectorAction[++i]);
-        bpDict[head].SetJointStrength(vectorAction[++i]);
-        bpDict[thighL].SetJointStrength(vectorAction[++i]);
-        bpDict[shinL].SetJointStrength(vectorAction[++i]);
-        bpDict[footL].SetJointStrength(vectorAction[++i]);
-        bpDict[thighR].SetJointStrength(vectorAction[++i]);
-        bpDict[shinR].SetJointStrength(vectorAction[++i]);
-        bpDict[footR].SetJointStrength(vectorAction[++i]);
-        bpDict[upperArmL].SetJointStrength(vectorAction[++i]);
-        bpDict[lowerArmL].SetJointStrength(vectorAction[++i]);
-        bpDict[upperArmR].SetJointStrength(vectorAction[++i]);
-        bpDict[lowerArmR].SetJointStrength(vectorAction[++i]);
+        //bpDict[thighL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        //bpDict[thighR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        //bpDict[shinL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[shinR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[footR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        //bpDict[footL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
-        //Left hand
-        bpDict[handL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
-        bpDict[thum1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[thum2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[ind1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[ind2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[mid1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[mid2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[rin1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[rin2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[lil1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[lil2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
 
-        //Right hand
-        bpDict[handR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
-        bpDict[thum1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[thum2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[ind1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[ind2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[mid1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[mid2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[rin1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[rin2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[lil1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        bpDict[lil2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
-        Debug.Log("Index " + i);
+        //bpDict[upperArmL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        //bpDict[upperArmR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        //bpDict[lowerArmL].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[lowerArmR].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[head].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+
+        ////update joint strength settings
+        //bpDict[chest].SetJointStrength(vectorAction[++i]);
+        //bpDict[spine].SetJointStrength(vectorAction[++i]);
+        //bpDict[head].SetJointStrength(vectorAction[++i]);
+        //bpDict[thighL].SetJointStrength(vectorAction[++i]);
+        //bpDict[shinL].SetJointStrength(vectorAction[++i]);
+        //bpDict[footL].SetJointStrength(vectorAction[++i]);
+        //bpDict[thighR].SetJointStrength(vectorAction[++i]);
+        //bpDict[shinR].SetJointStrength(vectorAction[++i]);
+        //bpDict[footR].SetJointStrength(vectorAction[++i]);
+        //bpDict[upperArmL].SetJointStrength(vectorAction[++i]);
+        //bpDict[lowerArmL].SetJointStrength(vectorAction[++i]);
+        //bpDict[upperArmR].SetJointStrength(vectorAction[++i]);
+        //bpDict[lowerArmR].SetJointStrength(vectorAction[++i]);
+
+        ////Left hand
+        //bpDict[handL].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        //bpDict[thum1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[thum2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[ind1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[ind2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[mid1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[mid2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[rin1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[rin2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[lil1L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[lil2L].SetJointTargetRotation(vectorAction[++i], 0, 0);
+
+        ////Right hand
+        //bpDict[handR].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], 0);
+        //bpDict[thum1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[thum2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[ind1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[ind2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[mid1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[mid2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[rin1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[rin2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[lil1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
+        //bpDict[lil2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
 
         m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
@@ -318,7 +345,7 @@ public class BabyAgent : Agent
 
         for (int i = 0; i < 39; i++)
         {
-            actionsOut[i] = Random.Range(-1.0f, 1f)*.7f;//*100;
+            actionsOut[i] = Random.Range(-1.0f, 1f);
         }
         //Hands
         for (int i = 39; i < 63; i++)
