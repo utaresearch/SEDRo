@@ -213,9 +213,7 @@ public class BabyAgent : Agent
 
         if (bp.rb.transform != hips && bp.rb.transform != head)
         {
-            sensor.AddObservation(bp.currentXNormalizedRot);
-            sensor.AddObservation(bp.currentYNormalizedRot);
-            sensor.AddObservation(bp.currentZNormalizedRot);
+            sensor.AddObservation(bp.currentNormalizedTorque);
             sensor.AddObservation(bp.currentStrength / m_JdController.maxJointForceLimit);
         }
     }

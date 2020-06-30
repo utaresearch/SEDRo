@@ -41,6 +41,7 @@ namespace DAIVID
         public AnimationCurve jointTorqueCurve = new AnimationCurve();
 
         public Vector3 maxTorque;
+        public Vector3 currentNormalizedTorque = new Vector3(0, 0, 0);
 
         /// <summary>
         /// Reset body part to initial configuration.
@@ -91,7 +92,9 @@ namespace DAIVID
 
         public void SetJointTorque(float x, float y, float z)
         {
+            currentNormalizedTorque = new Vector3(x / maxTorque.x, y / maxTorque.y, z / maxTorque.z);
             rb.AddRelativeTorque(x * maxTorque.x * JointDriveController.jointTorqueScale, y * maxTorque.y * JointDriveController.jointTorqueScale, z * maxTorque.z * JointDriveController.jointTorqueScale);
+
         }
 
         public void SetJointStrength(float strength)
