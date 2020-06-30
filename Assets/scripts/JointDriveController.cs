@@ -92,7 +92,9 @@ namespace DAIVID
 
         public void SetJointTorque(float x, float y, float z)
         {
-            currentNormalizedTorque = new Vector3(x / maxTorque.x, y / maxTorque.y, z / maxTorque.z);
+            currentNormalizedTorque.x = maxTorque.x == 0 ? 0 : x / maxTorque.x;
+            currentNormalizedTorque.y = maxTorque.y == 0 ? 0 : y / maxTorque.y;
+            currentNormalizedTorque.z = maxTorque.z == 0 ? 0 : z / maxTorque.z;
             rb.AddRelativeTorque(x * maxTorque.x * JointDriveController.jointTorqueScale, y * maxTorque.y * JointDriveController.jointTorqueScale, z * maxTorque.z * JointDriveController.jointTorqueScale);
 
         }
@@ -121,7 +123,7 @@ namespace DAIVID
         public float jointDampen;
         public float maxJointForceLimit;
 
-        public const float jointTorqueScale = 0.1f;
+        public const float jointTorqueScale = 0.3f;
         float m_FacingDot;
 
         [HideInInspector] public Dictionary<Transform, BodyPart> bodyPartsDict = new Dictionary<Transform, BodyPart>();

@@ -72,11 +72,6 @@ public class BabyAgent : Agent
 
     EnvironmentParameters m_ResetParams;
 
-    /**
-     * Sets the body movement strengths
-     */
-    private float TORQUE_SCALE = .3f;
-    private float fps = 0;
 
     public override void Initialize()
     {
@@ -237,7 +232,7 @@ public class BabyAgent : Agent
 
     public override void OnActionReceived(float[] vectorAction)
     {
-        fps = 1.0f/Time.deltaTime;
+        //float fps = 1.0f/Time.deltaTime;
         //Debug.Log("FPS: " + fps);
 
         //Debug.Break();
@@ -245,51 +240,48 @@ public class BabyAgent : Agent
         var i = -1;
 
 
-        // TODO Move torque actions to drive controller : Rubel
         bpDict[spine].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
         bpDict[chest].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
         bpDict[head].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
-        bpDict[thighL].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
-        bpDict[thighR].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
-        bpDict[shinL].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
-        bpDict[shinR].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
-        bpDict[footR].SetJointTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
-        bpDict[footL].SetJointTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
+        bpDict[thighL].SetJointTorque(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[thighR].SetJointTorque(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[shinL].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[shinR].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[footR].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        bpDict[footL].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
 
-        bpDict[upperArmL].SetJointTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        bpDict[upperArmR].SetJointTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        bpDict[lowerArmL].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
-        bpDict[lowerArmR].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
-        
+        bpDict[upperArmL].SetJointTorque(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[upperArmR].SetJointTorque(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[lowerArmL].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[lowerArmR].SetJointTorque(vectorAction[++i], 0, 0);
 
-        float fingerTorque = 1f * TORQUE_SCALE;
         ////Left hand
-        bpDict[handL].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        bpDict[thum1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[thum2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[ind1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[ind2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[mid1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[mid2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[rin1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[rin2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[lil1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[lil2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[handL].SetJointTorque(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[thum1L].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[thum2L].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[ind1L].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[ind2L].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[mid1L].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[mid2L].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[rin1L].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[rin2L].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[lil1L].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[lil2L].SetJointTorque(vectorAction[++i], 0, 0);
 
         //////Right hand
-        bpDict[handR].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        bpDict[thum1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[thum2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[ind1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[ind2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[mid1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[mid2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[rin1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[rin2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        bpDict[lil1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        bpDict[lil2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[handR].SetJointTorque(vectorAction[++i], vectorAction[++i], 0);
+        bpDict[thum1R].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[thum2R].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[ind1R].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[ind2R].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[mid1R].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[mid2R].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[rin1R].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[rin2R].SetJointTorque(vectorAction[++i], 0, 0);
+        bpDict[lil1R].SetJointTorque(vectorAction[++i], 0, vectorAction[++i]);
+        bpDict[lil2R].SetJointTorque(vectorAction[++i], 0, 0);
 
 
         //bpDict[chest].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
