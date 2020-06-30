@@ -100,30 +100,31 @@ public class BabyAgent : Agent
         m_SpineRb = spine.GetComponent<Rigidbody>();
 
 
-        Vector3 fingerTorque = new Vector3(1, 1, 1);
+        Vector3 finger1Torque = new Vector3(1, 0, 1);
+        Vector3 finger2Torque = new Vector3(1, 0, 0);
         //right fingers
-        m_JdController.SetupBodyPart(thum1R, fingerTorque);
-        m_JdController.SetupBodyPart(thum2R, fingerTorque);
-        m_JdController.SetupBodyPart(ind1R, fingerTorque);
-        m_JdController.SetupBodyPart(ind2R, fingerTorque);
-        m_JdController.SetupBodyPart(mid1R, fingerTorque);
-        m_JdController.SetupBodyPart(mid2R, fingerTorque);
-        m_JdController.SetupBodyPart(rin1R, fingerTorque);
-        m_JdController.SetupBodyPart(rin2R, fingerTorque);
-        m_JdController.SetupBodyPart(lil1R, fingerTorque);
-        m_JdController.SetupBodyPart(lil2R, fingerTorque);
+        m_JdController.SetupBodyPart(thum1R, finger1Torque);
+        m_JdController.SetupBodyPart(thum2R, finger2Torque);
+        m_JdController.SetupBodyPart(ind1R, finger1Torque);
+        m_JdController.SetupBodyPart(ind2R, finger2Torque);
+        m_JdController.SetupBodyPart(mid1R, finger1Torque);
+        m_JdController.SetupBodyPart(mid2R, finger2Torque);
+        m_JdController.SetupBodyPart(rin1R, finger1Torque);
+        m_JdController.SetupBodyPart(rin2R, finger2Torque);
+        m_JdController.SetupBodyPart(lil1R, finger1Torque);
+        m_JdController.SetupBodyPart(lil2R, finger2Torque);
 
         //left fingers
-        m_JdController.SetupBodyPart(thum1L, fingerTorque);
-        m_JdController.SetupBodyPart(thum2L, fingerTorque);
-        m_JdController.SetupBodyPart(ind1L, fingerTorque);
-        m_JdController.SetupBodyPart(ind2L, fingerTorque);
-        m_JdController.SetupBodyPart(mid1L, fingerTorque);
-        m_JdController.SetupBodyPart(mid2L, fingerTorque);
-        m_JdController.SetupBodyPart(rin1L, fingerTorque);
-        m_JdController.SetupBodyPart(rin2L, fingerTorque);
-        m_JdController.SetupBodyPart(lil1L, fingerTorque);
-        m_JdController.SetupBodyPart(lil2L, fingerTorque);
+        m_JdController.SetupBodyPart(thum1L, finger1Torque);
+        m_JdController.SetupBodyPart(thum2L, finger2Torque);
+        m_JdController.SetupBodyPart(ind1L, finger1Torque);
+        m_JdController.SetupBodyPart(ind2L, finger2Torque);
+        m_JdController.SetupBodyPart(mid1L, finger1Torque);
+        m_JdController.SetupBodyPart(mid2L, finger2Torque);
+        m_JdController.SetupBodyPart(rin1L, finger1Torque);
+        m_JdController.SetupBodyPart(rin2L, finger2Torque);
+        m_JdController.SetupBodyPart(lil1L, finger1Torque);
+        m_JdController.SetupBodyPart(lil2L, finger2Torque);
 
         m_VisionController = GetComponent<VisionController>();
         if (m_VisionController == null)
