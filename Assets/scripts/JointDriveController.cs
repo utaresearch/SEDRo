@@ -40,6 +40,8 @@ namespace DAIVID
         public AnimationCurve jointForceCurve = new AnimationCurve();
         public AnimationCurve jointTorqueCurve = new AnimationCurve();
 
+        public Vector3 maxTorque;
+
         /// <summary>
         /// Reset body part to initial configuration.
         /// </summary>
@@ -82,6 +84,16 @@ namespace DAIVID
             currentEularJointRotation = new Vector3(xRot, yRot, zRot);
         }
 
+        // <summary>
+        /// Apply torque according to defined goal `x, y, z` angle.
+        /// </summary>
+        /// 
+
+        public void SetJointTorque(float x, float y, float z)
+        {
+            rb.AddRelativeTorque(x * maxTorque.x * JointDriveController.jointTorqueScale, y * maxTorque.y * JointDriveController.jointTorqueScale, z * maxTorque.z * JointDriveController.jointTorqueScale);
+        }
+
         public void SetJointStrength(float strength)
         {
             var rawVal = (strength + 1f) * 0.5f * thisJdController.maxJointForceLimit;
@@ -105,6 +117,8 @@ namespace DAIVID
 
         public float jointDampen;
         public float maxJointForceLimit;
+
+        public const float jointTorqueScale = 0.1f;
         float m_FacingDot;
 
         [HideInInspector] public Dictionary<Transform, BodyPart> bodyPartsDict = new Dictionary<Transform, BodyPart>();
@@ -114,14 +128,15 @@ namespace DAIVID
         /// <summary>
         /// Create BodyPart object and add it to dictionary.
         /// </summary>
-        public void SetupBodyPart(Transform t)
+        public void SetupBodyPart(Transform t, Vector3 maxTorque)
         {
             var bp = new BodyPart
             {
                 rb = t.GetComponent<Rigidbody>(),
                 joint = t.GetComponent<ConfigurableJoint>(),
                 startingPos = t.position,
-                startingRot = t.rotation
+                startingRot = t.rotation,
+                maxTorque = maxTorque
             };
             bp.rb.maxAngularVelocity = 100;
             bp.thisJdController = this;

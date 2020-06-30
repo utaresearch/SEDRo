@@ -71,53 +71,64 @@ public class BabyAgent : Agent
     Rigidbody m_SpineRb;
 
     EnvironmentParameters m_ResetParams;
+
+    /**
+     * Sets the body movement strengths
+     */
+    private float TORQUE_SCALE = .3f;
+    private float fps = 0;
+
     public override void Initialize()
     {
         m_JdController = GetComponent<JointDriveController>();
-        m_JdController.SetupBodyPart(hips);
-        m_JdController.SetupBodyPart(chest);
-        m_JdController.SetupBodyPart(spine);
-        m_JdController.SetupBodyPart(head);
-        m_JdController.SetupBodyPart(thighL);
-        m_JdController.SetupBodyPart(shinL);
-        m_JdController.SetupBodyPart(footL);
-        m_JdController.SetupBodyPart(thighR);
-        m_JdController.SetupBodyPart(shinR);
-        m_JdController.SetupBodyPart(footR);
-        m_JdController.SetupBodyPart(upperArmL);
-        m_JdController.SetupBodyPart(lowerArmL);
-        m_JdController.SetupBodyPart(handL);
-        m_JdController.SetupBodyPart(upperArmR);
-        m_JdController.SetupBodyPart(lowerArmR);
-        m_JdController.SetupBodyPart(handR);
+        m_JdController.SetupBodyPart(hips, new Vector3(0, 0, 0));
+        m_JdController.SetupBodyPart(chest, new Vector3(50, 50, 50));
+        m_JdController.SetupBodyPart(spine, new Vector3(50, 50, 50));
+        m_JdController.SetupBodyPart(head, new Vector3(20, 20, 20));
+
+        m_JdController.SetupBodyPart(thighL, new Vector3(50, 50, 0));
+        m_JdController.SetupBodyPart(shinL, new Vector3(50, 0, 0));
+        m_JdController.SetupBodyPart(footL, new Vector3(25, 25, 25));
+        m_JdController.SetupBodyPart(thighR, new Vector3(50, 50, 0));
+        m_JdController.SetupBodyPart(shinR, new Vector3(50, 0, 0));
+        m_JdController.SetupBodyPart(footR, new Vector3(25, 25, 25));
+
+        m_JdController.SetupBodyPart(upperArmL, new Vector3(10, 5, 0));
+        m_JdController.SetupBodyPart(lowerArmL, new Vector3(5, 0, 0));
+        m_JdController.SetupBodyPart(handL, new Vector3(5, 5, 0));
+        m_JdController.SetupBodyPart(upperArmR, new Vector3(10, 5, 0));
+        m_JdController.SetupBodyPart(lowerArmR, new Vector3(5, 0, 0));
+        m_JdController.SetupBodyPart(handR, new Vector3(5, 5, 0));
 
         m_HipsRb = hips.GetComponent<Rigidbody>();
         m_ChestRb = chest.GetComponent<Rigidbody>();
         m_SpineRb = spine.GetComponent<Rigidbody>();
 
+
+        Vector3 fingerTorque = new Vector3(1, 1, 1);
         //right fingers
-        m_JdController.SetupBodyPart(thum1R);
-        m_JdController.SetupBodyPart(thum2R);
-        m_JdController.SetupBodyPart(ind1R);
-        m_JdController.SetupBodyPart(ind2R);
-        m_JdController.SetupBodyPart(mid1R);
-        m_JdController.SetupBodyPart(mid2R);
-        m_JdController.SetupBodyPart(rin1R);
-        m_JdController.SetupBodyPart(rin2R);
-        m_JdController.SetupBodyPart(lil1R);
-        m_JdController.SetupBodyPart(lil2R);
+        m_JdController.SetupBodyPart(thum1R, fingerTorque);
+        m_JdController.SetupBodyPart(thum2R, fingerTorque);
+        m_JdController.SetupBodyPart(ind1R, fingerTorque);
+        m_JdController.SetupBodyPart(ind2R, fingerTorque);
+        m_JdController.SetupBodyPart(mid1R, fingerTorque);
+        m_JdController.SetupBodyPart(mid2R, fingerTorque);
+        m_JdController.SetupBodyPart(rin1R, fingerTorque);
+        m_JdController.SetupBodyPart(rin2R, fingerTorque);
+        m_JdController.SetupBodyPart(lil1R, fingerTorque);
+        m_JdController.SetupBodyPart(lil2R, fingerTorque);
 
         //left fingers
-        m_JdController.SetupBodyPart(thum1L);
-        m_JdController.SetupBodyPart(thum2L);
-        m_JdController.SetupBodyPart(ind1L);
-        m_JdController.SetupBodyPart(ind2L);
-        m_JdController.SetupBodyPart(mid1L);
-        m_JdController.SetupBodyPart(mid2L);
-        m_JdController.SetupBodyPart(rin1L);
-        m_JdController.SetupBodyPart(rin2L);
-        m_JdController.SetupBodyPart(lil1L);
-        m_JdController.SetupBodyPart(lil2L);
+        m_JdController.SetupBodyPart(thum1L, fingerTorque);
+        m_JdController.SetupBodyPart(thum2L, fingerTorque);
+        m_JdController.SetupBodyPart(ind1L, fingerTorque);
+        m_JdController.SetupBodyPart(ind2L, fingerTorque);
+        m_JdController.SetupBodyPart(mid1L, fingerTorque);
+        m_JdController.SetupBodyPart(mid2L, fingerTorque);
+        m_JdController.SetupBodyPart(rin1L, fingerTorque);
+        m_JdController.SetupBodyPart(rin2L, fingerTorque);
+        m_JdController.SetupBodyPart(lil1L, fingerTorque);
+        m_JdController.SetupBodyPart(lil2L, fingerTorque);
 
         m_VisionController = GetComponent<VisionController>();
         if (m_VisionController == null)
@@ -226,8 +237,6 @@ public class BabyAgent : Agent
         SetResetParameters();
     }
 
-    private float TORQUE_SCALE = .3f;
-    private float fps = 0;
     public override void OnActionReceived(float[] vectorAction)
     {
         fps = 1.0f/Time.deltaTime;
@@ -239,48 +248,50 @@ public class BabyAgent : Agent
 
 
         // TODO Move torque actions to drive controller : Rubel
-        spine.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE);
+        bpDict[spine].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        bpDict[chest].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        bpDict[head].SetJointTorque(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
 
-        thighL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
-        thighR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
-        shinL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
-        shinR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
-        footR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
-        footL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
+        bpDict[thighL].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
+        bpDict[thighR].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
+        bpDict[shinL].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
+        bpDict[shinR].SetJointTorque(vectorAction[++i] * 50 * TORQUE_SCALE, 0, 0);
+        bpDict[footR].SetJointTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
+        bpDict[footL].SetJointTorque(vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE, vectorAction[++i] * 25 * TORQUE_SCALE);
 
 
-        upperArmL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        upperArmR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        lowerArmL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
-        lowerArmR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
-        head.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 20 * TORQUE_SCALE, vectorAction[++i] * 20 * TORQUE_SCALE, 0);
+        bpDict[upperArmL].SetJointTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        bpDict[upperArmR].SetJointTorque(vectorAction[++i] * 10 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        bpDict[lowerArmL].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
+        bpDict[lowerArmR].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
+        
 
         float fingerTorque = 1f * TORQUE_SCALE;
         ////Left hand
-        handL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        thum1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        thum2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        ind1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        ind2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        mid1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        mid2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        rin1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        rin2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        lil1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        lil2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[handL].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        bpDict[thum1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[thum2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[ind1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[ind2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[mid1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[mid2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[rin1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[rin2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[lil1L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[lil2L].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
 
         //////Right hand
-        handR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        thum1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        thum2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        ind1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        ind2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        mid1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        mid2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        rin1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        rin2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
-        lil1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
-        lil2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[handR].SetJointTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
+        bpDict[thum1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[thum2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[ind1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[ind2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[mid1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[mid2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[rin1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[rin2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        bpDict[lil1R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        bpDict[lil2R].SetJointTorque(vectorAction[++i] * fingerTorque, 0, 0);
 
 
         //bpDict[chest].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
@@ -354,22 +365,22 @@ public class BabyAgent : Agent
     {
         //Debug.Log("Called hurestic");
 
-        for (int i = 0; i < 39; i++)
+        for (int i = 0; i < 40; i++)
         {
             actionsOut[i] = Random.Range(-1.0f, 1f);
         }
         //Hands
-        for (int i = 39; i < 63; i++)
+        for (int i = 40; i < 74; i++)
         {
             actionsOut[i] = Random.Range(-1.0f, 1.0f); //1;
         }
         //Eyes
-        for (int i = 63; i < 65; i++)
+        for (int i = 74; i < 76; i++)
         {
             actionsOut[i] = Random.Range(-1.0f, 1.0f);
         }
 
-        actionsOut[65] = Random.Range(0f, 1.0f);  // Focal distance
+        actionsOut[76] = Random.Range(0f, 1.0f);  // Focal distance
         //Debug.Log("Heuristic");
 
         //action[39] = -1;
