@@ -226,14 +226,19 @@ public class BabyAgent : Agent
         SetResetParameters();
     }
 
-    private float TORQUE_SCALE = .15f;
-
+    private float TORQUE_SCALE = .3f;
+    private float fps = 0;
     public override void OnActionReceived(float[] vectorAction)
     {
+        fps = 1.0f/Time.deltaTime;
+        //Debug.Log("FPS: " + fps);
+
         //Debug.Break();
         var bpDict = m_JdController.bodyPartsDict;
         var i = -1;
 
+
+        // TODO Move torque actions to drive controller : Rubel
         spine.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE);
 
         thighL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 50 * TORQUE_SCALE, vectorAction[++i] * 50 * TORQUE_SCALE, 0);
@@ -250,31 +255,32 @@ public class BabyAgent : Agent
         lowerArmR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, 0, 0);
         head.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 20 * TORQUE_SCALE, vectorAction[++i] * 20 * TORQUE_SCALE, 0);
 
+        float fingerTorque = 1f * TORQUE_SCALE;
         ////Left hand
         handL.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        //thum1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //thum2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //ind1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //ind2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //mid1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //mid2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //rin1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //rin2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //lil1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //lil2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        thum1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        thum2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        ind1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        ind2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        mid1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        mid2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        rin1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        rin2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        lil1L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        lil2L.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
 
         //////Right hand
         handR.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * 5 * TORQUE_SCALE, vectorAction[++i] * 5 * TORQUE_SCALE, 0);
-        //thum1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //thum2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //ind1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //ind2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //mid1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //mid2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //rin1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //rin2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //lil1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
-        //lil2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i], 0, 0);
+        thum1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        thum2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        ind1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        ind2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        mid1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        mid2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        rin1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        rin2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
+        lil1R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, vectorAction[++i] * fingerTorque);
+        lil2R.GetComponent<Rigidbody>().AddRelativeTorque(vectorAction[++i] * fingerTorque, 0, 0);
 
 
         //bpDict[chest].SetJointTargetRotation(vectorAction[++i], vectorAction[++i], vectorAction[++i]);
@@ -335,8 +341,13 @@ public class BabyAgent : Agent
         //bpDict[lil1R].SetJointTargetRotation(vectorAction[++i], 0, 0);
         //bpDict[lil2R].SetJointTargetRotation(vectorAction[++i], 0, 0);
 
-        m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], vectorAction[++i]);
+        m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], Mathf.Abs(vectorAction[++i]));
 
+    }
+
+    private void FixedUpdate()
+    {
+        
     }
 
     public override void Heuristic(float[] actionsOut)
