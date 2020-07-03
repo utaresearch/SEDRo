@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.PostProcessing;
 
 namespace DAIVID
 {
@@ -72,6 +74,20 @@ namespace DAIVID
         public Transform rightLaser;
         public Transform leftLaser;
 
+
+        [Header("Head and Eye cams")]
+        [Space(10)]
+        public Camera headPeripheralVisionCam;
+        public Camera headCentralVisionCam;
+        public Camera leftPeripheralVisionCam;
+        public Camera leftCentralVisionCam;
+        public Camera rightPeripheralVisionCam;
+        public Camera rightCentralVisionCam;
+
+        [HideInInspector] public const int NO_OF_VISION_CAM = 6;
+
+        private Camera[] cameras = new Camera[NO_OF_VISION_CAM];
+
         //This limit of change is in degree
         private float maxAllowableChangePerStep = 5;
         private Vector3 currentEularGazeRotation;
@@ -79,6 +95,42 @@ namespace DAIVID
         [HideInInspector] public Dictionary<Transform, Eye> eyeDict = new Dictionary<Transform, Eye>();
 
         [HideInInspector] public List<Eye> eyeList = new List<Eye>();
+
+        private Dictionary<Camera, DepthOfField> depthFilterDict = new Dictionary<Camera, DepthOfField>();
+
+
+        [HideInInspector] public const float MaxEyeAperture = 2.4f;
+        [HideInInspector] public const float MinEyeAperture = 9.5f;
+
+        private void Awake()
+        {
+            FindDepthFilters();
+        }
+
+        private void FindDepthFilters()
+        {
+            cameras[0] = headPeripheralVisionCam;
+            cameras[1] = headCentralVisionCam;
+            cameras[2] = leftPeripheralVisionCam;
+            cameras[3] = leftCentralVisionCam;
+            cameras[4] = rightPeripheralVisionCam;
+            cameras[5] = rightCentralVisionCam;
+
+            foreach(Camera cam in cameras)
+            {
+                PostProcessVolume postVol = cam.gameObject.GetComponent<PostProcessVolume>();
+                DepthOfField dof = null;
+                if (postVol)
+                {
+                    if (postVol.sharedProfile.TryGetSettings<DepthOfField>(out dof))
+                    {
+                        Debug.Log("Depth filter found for camera" + cam);
+                    }
+                }
+                depthFilterDict.Add(cam, dof);
+            }
+            
+        }
 
         /// <summary>
         /// Create Eye object and add it to dictionary.
@@ -114,7 +166,7 @@ namespace DAIVID
 
             float angleRight = Vector3.Angle(Vector3.forward, targetDir.normalized);
 
-            rightLaser.localRotation = Quaternion.Euler(eyeGazeLaser.localRotation.eulerAngles.x, eyeGazeLaser.localRotation.eulerAngles.y -angleRight, eyeGazeLaser.localRotation.eulerAngles.z);
+            rightLaser.localRotation = Quaternion.Euler(eyeGazeLaser.localRotation.eulerAngles.x, eyeGazeLaser.localRotation.eulerAngles.y - angleRight, eyeGazeLaser.localRotation.eulerAngles.z);
             rightEye.localRotation = rightLaser.localRotation * Quaternion.Euler(-90, 0, 0);    //Laser angle are rotated by 90 degree. So converting towards the forward of eye
 
             targetDir = gazeLaserEndPosition - leftEye.localPosition;
@@ -126,33 +178,62 @@ namespace DAIVID
             //Debug.Break();
         }
 
-        internal void SetGazeRotation(float x, float y, float visionDistance)
+        internal void SetGazeRotation(float x, float y, float visionFocusDistance)
         {
             x = (x + 1f) * 0.5f;
             y = (y + 1f) * 0.5f;
             //z = (z + 1f) * 0.5f;
+
+            visionFocusDistance = Mathf.Abs(visionFocusDistance);
+            //visionFocusDistance = 0.003f;
 
             Vector3 prev = currentEularGazeRotation;
 
             var xRot = Mathf.Lerp(-maxAllowableChangePerStep, maxAllowableChangePerStep, x);
             var yRot = Mathf.Lerp(-maxAllowableChangePerStep, maxAllowableChangePerStep, y);
 
-            xRot = Mathf.Clamp(prev.x + xRot, maxAscendingRotationAngle, maxDescendingRotationAngle);
+            xRot = Mathf.Clamp(prev.x + xRot, -maxAscendingRotationAngle, maxDescendingRotationAngle);
             yRot = Mathf.Clamp(prev.y + yRot, -maxLeftRotationAngle, maxRightRotationAngle);
 
             //var xRot = Mathf.Lerp(-maxAscendingRotationAngle, maxDescendingRotationAngle, x);
             //var yRot = Mathf.Lerp(-maxLeftRotationAngle, maxRightRotationAngle, y);
             //var focalLength = Mathf.Lerp(-joint.angularZLimit.limit, joint.angularZLimit.limit, z);
-            if(visionDistance * maxVisionDistance < 0)
+            if(visionFocusDistance * maxVisionDistance < 0)
             {
-                Debug.LogError("ScaleMode negative" + visionDistance + "::" + maxVisionDistance);
+                Debug.LogError("ScaleMode negative" + visionFocusDistance + "::" + maxVisionDistance);
             }
 
             eyeGazeLaser.localRotation = Quaternion.Euler(xRot + 90, yRot, 0);
-            eyeGazeLaser.localScale = new Vector3(eyeGazeLaser.localScale.x, visionDistance * maxVisionDistance, eyeGazeLaser.localScale.z);
+            eyeGazeLaser.localScale = new Vector3(eyeGazeLaser.localScale.x, visionFocusDistance * maxVisionDistance, eyeGazeLaser.localScale.z);
+            headPeripheralVisionCam.transform.localRotation = Quaternion.Euler(xRot, yRot, 0);
             currentEularGazeRotation = new Vector3(xRot, yRot, 0);
+
+            ApplyDepthOfFieldEffects(visionFocusDistance);
         }
 
+        private void ApplyDepthOfFieldEffects(float visionFocusDistance)
+        {
+            Vector3 gazeLaserEndPosition = new Vector3(eyeGazeLaser.localPosition.x, eyeGazeLaser.localPosition.y, eyeGazeLaser.localPosition.z + eyeGazeLaser.localScale.y * 2);
+            Vector3 gazeWorldCoord = eyeGazeLaser.TransformDirection(gazeLaserEndPosition);
 
+            Vector3 periCentralCamWorldCoord = headPeripheralVisionCam.transform.position;
+
+            //Debug.Log("Gaze:" + gazeWorldCoord.ToString());
+            //Debug.Log("Cam:" + periCentralCamWorldCoord.ToString());
+            //Debug.Log("Dist:" + (gazeWorldCoord - periCentralCamWorldCoord).ToString());
+
+            float distance = (gazeWorldCoord - periCentralCamWorldCoord).magnitude;
+            //Debug.Log("Dist-Val:" + distance.ToString("F4"));
+
+            foreach (Camera cam in cameras)
+            {
+                DepthOfField dof = depthFilterDict[cam];
+                if (dof)
+                {
+                    dof.focusDistance.value = Mathf.Abs(distance) / 10;
+                    dof.aperture.value = MaxEyeAperture + visionFocusDistance * (MinEyeAperture - MaxEyeAperture);
+                }
+            }
+        }
     }
 }
