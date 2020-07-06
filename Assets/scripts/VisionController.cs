@@ -102,14 +102,17 @@ namespace DAIVID
         [HideInInspector] public const float MaxEyeAperture = 2.4f;
         [HideInInspector] public const float MinEyeAperture = 9.5f;
 
+        
+
         private void Awake()
         {
+            //maxVisionDistance = 2f;
             FindDepthFilters();
         }
 
         private void FindDepthFilters()
         {
-            cameras[0] = headPeripheralVisionCam;
+                cameras[0] = headPeripheralVisionCam;
             cameras[1] = headCentralVisionCam;
             cameras[2] = leftPeripheralVisionCam;
             cameras[3] = leftCentralVisionCam;
@@ -185,7 +188,7 @@ namespace DAIVID
             //z = (z + 1f) * 0.5f;
 
             visionFocusDistance = Mathf.Abs(visionFocusDistance);
-            //visionFocusDistance = 0.003f;
+            //visionFocusDistance = 1;
 
             Vector3 prev = currentEularGazeRotation;
 
@@ -213,16 +216,11 @@ namespace DAIVID
 
         private void ApplyDepthOfFieldEffects(float visionFocusDistance)
         {
-            Vector3 gazeLaserEndPosition = new Vector3(eyeGazeLaser.localPosition.x, eyeGazeLaser.localPosition.y, eyeGazeLaser.localPosition.z + eyeGazeLaser.localScale.y * 2);
-            Vector3 gazeWorldCoord = eyeGazeLaser.TransformDirection(gazeLaserEndPosition);
+            Vector3 gazeLaserEndPosition = new Vector3(eyeGazeLaser.localPosition.x, eyeGazeLaser.localPosition.y, eyeGazeLaser.localPosition.z + eyeGazeLaser.lossyScale.y * 2);
+            Vector3 gazeLaserStartPosition = new Vector3(eyeGazeLaser.localPosition.x, eyeGazeLaser.localPosition.y, eyeGazeLaser.localPosition.z);
 
-            Vector3 periCentralCamWorldCoord = headPeripheralVisionCam.transform.position;
 
-            //Debug.Log("Gaze:" + gazeWorldCoord.ToString());
-            //Debug.Log("Cam:" + periCentralCamWorldCoord.ToString());
-            //Debug.Log("Dist:" + (gazeWorldCoord - periCentralCamWorldCoord).ToString());
-
-            float distance = (gazeWorldCoord - periCentralCamWorldCoord).magnitude;
+            float distance = Vector3.Distance(gazeLaserEndPosition, gazeLaserStartPosition);//(gazeWorldCoord - periCentralCamWorldCoord).magnitude;
             //Debug.Log("Dist-Val:" + distance.ToString("F4"));
 
             foreach (Camera cam in cameras)
@@ -230,8 +228,10 @@ namespace DAIVID
                 DepthOfField dof = depthFilterDict[cam];
                 if (dof)
                 {
-                    dof.focusDistance.value = Mathf.Abs(distance) / 10;
-                    dof.aperture.value = MaxEyeAperture + visionFocusDistance * (MinEyeAperture - MaxEyeAperture);
+                    dof.focusDistance.value = Mathf.Abs(distance);
+
+                    // Limiting the aperture in the range of around 20 meter. So, after 20 meters aperture will be f/9.5. 
+                    dof.aperture.value = MaxEyeAperture + Math.Min((visionFocusDistance * maxVisionDistance)/ 20, 1) * (MinEyeAperture - MaxEyeAperture);
                 }
             }
         }
