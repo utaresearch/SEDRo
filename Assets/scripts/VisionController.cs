@@ -99,10 +99,12 @@ namespace DAIVID
         private Dictionary<Camera, DepthOfField> depthFilterDict = new Dictionary<Camera, DepthOfField>();
 
 
-        [HideInInspector] public const float MaxEyeAperture = 2.4f;
-        [HideInInspector] public const float MinEyeAperture = 9.5f;
+        [HideInInspector] public const float MaxEyeAperture = 2.0f;
+        //[HideInInspector] public const float MinEyeAperture = 9.5f;
+        // For newborn the vision must be blurry. So aperture needs to be low. Needs to be changed according to baby's age. But should not cross 9.5
+        [HideInInspector] public const float MinEyeAperture = 3.0f;
 
-        
+
 
         private void Awake()
         {
@@ -112,7 +114,7 @@ namespace DAIVID
 
         private void FindDepthFilters()
         {
-                cameras[0] = headPeripheralVisionCam;
+            cameras[0] = headPeripheralVisionCam;
             cameras[1] = headCentralVisionCam;
             cameras[2] = leftPeripheralVisionCam;
             cameras[3] = leftCentralVisionCam;
@@ -188,7 +190,6 @@ namespace DAIVID
             //z = (z + 1f) * 0.5f;
 
             visionFocusDistance = Mathf.Abs(visionFocusDistance);
-            //visionFocusDistance = 1;
 
             Vector3 prev = currentEularGazeRotation;
 
@@ -207,7 +208,20 @@ namespace DAIVID
             }
 
             eyeGazeLaser.localRotation = Quaternion.Euler(xRot + 90, yRot, 0);
-            eyeGazeLaser.localScale = new Vector3(eyeGazeLaser.localScale.x, visionFocusDistance * maxVisionDistance, eyeGazeLaser.localScale.z);
+
+            Vector3 scaleFactor = Utility.GetGlobalToLocalScaleFactor(eyeGazeLaser); //Determine the factor
+
+            ///
+            /// Vision focus distance scales the maxVision distance.
+            /// The scale is multiplied by 0.5 because we shifted the laser in one side and the laser is a cylinder which has y scale value = 2 by default.
+            /// So to reduce twice scaling, it is divided by 2.
+            ///
+
+            Vector3 newLocalScale = new Vector3(eyeGazeLaser.localScale.x, 0.5f * visionFocusDistance * maxVisionDistance / scaleFactor.y, eyeGazeLaser.localScale.z);
+
+            eyeGazeLaser.localScale = newLocalScale; //Set the new local scale
+
+
             headPeripheralVisionCam.transform.localRotation = Quaternion.Euler(xRot, yRot, 0);
             currentEularGazeRotation = new Vector3(xRot, yRot, 0);
 
