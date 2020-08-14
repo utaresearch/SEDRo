@@ -53,12 +53,12 @@ public class TouchSensorV2 : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Trigger:"+ other.name);
+        //Debug.Log("Trigger:"+ other.name);
         if (touchListener != null)
         {
             //touchListener.onTouchTriggered(sensorId);
         }
-        print(GetComponent<Renderer>().bounds.size);
+        //print(GetComponent<Renderer>().bounds.size);
     }
 
     private void drawSegmentation()
@@ -203,7 +203,7 @@ public class TouchSensorV2 : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        Debug.Log("TriggerExit:" + other.name);
+        //Debug.Log("TriggerExit:" + other.name);
         if (touchListener != null)
         {
             //touchListener.onTouchExit(sensorId);
