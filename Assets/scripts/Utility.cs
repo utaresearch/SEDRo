@@ -26,4 +26,11 @@ public static class Utility
             }
         }
     }
+
+    public static float Vector2DDistance(Vector3 v1, Vector3 v2)
+    {
+        float xDiff = v1.x - v2.x;
+        float zDiff = v1.z - v2.z;
+        return Mathf.Sqrt((xDiff * xDiff) + (zDiff * zDiff));
+    }
 }

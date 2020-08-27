@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(MotherIkController))]
 public class Mother : MonoBehaviour
 {
 
@@ -15,8 +16,12 @@ public class Mother : MonoBehaviour
 
     [SerializeField]
     private Transform baby;
+    [SerializeField]
+    private Transform babyMouth;
 
     private bool isMoving = false;
+
+    private MotherIkController ikController;
 
     // Start is called before the first frame update
     void Start()
@@ -32,21 +37,32 @@ public class Mother : MonoBehaviour
         {
             Debug.LogWarning("Mother doesn't have any Animator attached");
         }
+
+        ikController = GetComponent<MotherIkController>();
+        if (!ikController) {
+            Debug.LogError("Mother IK Controller not attached.");
+        }
     }
 
-    private bool isFeeding = false;
+    public bool isFeedingInProgress = false;
     // Update is called once per frame
     void Update()
     {
-
-    
+        
+        if(Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance)
+        {
+            //Debug.Log(Utility.Vector2DDistance(baby.position, transform.position) + " +update+ " + agent.stoppingDistance);
+            agent.isStopped = true;
+            agent.SetDestination(transform.position);
+        }
     }
 
     public void MoveToBaby(System.Action callback)
     {
-        Debug.Log(Vector3.Distance(baby.position, transform.position) + " ++ " + agent.stoppingDistance);
-        if (Vector3.Distance(baby.position, transform.position) > agent.stoppingDistance)
+        Debug.Log(Utility.Vector2DDistance(baby.position, transform.position) + " ++ " + agent.stoppingDistance);
+        if (Utility.Vector2DDistance(baby.position, transform.position) > agent.stoppingDistance)
         {
+            agent.isStopped = false;
             agent.SetDestination(baby.position);
             modelAnimator.SetBool("move", true);
             isMoving = true;
@@ -62,7 +78,7 @@ public class Mother : MonoBehaviour
     public void Greet()
     {
         
-        if (!isMoving && Vector3.Distance(baby.position, transform.position) <= agent.stoppingDistance)
+        if (!isMoving && Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance)
         {
             Debug.Log("Greeting");
             modelAnimator.SetBool("greet", true);
@@ -74,7 +90,9 @@ public class Mother : MonoBehaviour
 
     public void Feed(System.Action callback)
     {
-        if (!isMoving && Vector3.Distance(baby.position, transform.position) > agent.stoppingDistance)
+        isFeedingInProgress = true;
+        Debug.Log("Start feeding");
+        if (!isMoving && Utility.Vector2DDistance(baby.position, transform.position) > agent.stoppingDistance)
         {
             this.callback = callback;
             MoveToBaby(MovingComplete);
@@ -84,7 +102,7 @@ public class Mother : MonoBehaviour
         {
             //isFeeding = true;
             modelAnimator.SetBool("greet", true);
-            StartCoroutine(OnCompleteGreetAnimation(this.callback));
+            StartCoroutine(OnCompleteFeedingAnimation(this.callback));
         }
     }
 
@@ -92,15 +110,32 @@ public class Mother : MonoBehaviour
     {
         //isFeeding = true;
         Debug.Log("MovingComplete");
-        modelAnimator.SetBool("greet", true);
-        StartCoroutine(OnCompleteGreetAnimation(this.callback));
+        //modelAnimator.SetBool("greet", true);
+        ikController.EnableIK(true, baby, babyMouth);
+        
+        StartCoroutine(OnCompleteFeedingAnimation(this.callback));
     }
+
+    IEnumerator OnCompleteFeedingAnimation(System.Action callback)
+    {
+        //yield return new WaitUntil(() => modelAnimator.GetCurrentAnimatorStateInfo(0).IsName("greet") && modelAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
+        yield return new WaitForSeconds(2.0f);
+
+        if (Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance)
+        {
+            //modelAnimator.SetBool("greet", false);
+            callback();
+            ikController.EnableIK(false, baby, babyMouth);
+            isFeedingInProgress = false;
+        }
+    }
+
 
     IEnumerator OnCompleteGreetAnimation(System.Action callback)
     {
         yield return new WaitUntil(() => modelAnimator.GetCurrentAnimatorStateInfo(0).IsName("greet") && modelAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
 
-        if (Vector3.Distance(baby.position, transform.position) <= agent.stoppingDistance)
+        if (Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance)
         {
             modelAnimator.SetBool("greet", false);
             callback();
@@ -109,9 +144,9 @@ public class Mother : MonoBehaviour
 
     IEnumerator OnCompleteMoveAnimation(System.Action callback)
     {
-        yield return new WaitUntil(() => Vector3.Distance(baby.position, transform.position) <= agent.stoppingDistance);
+        yield return new WaitUntil(() => Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance);
 
-        if (Vector3.Distance(baby.position, transform.position) <= agent.stoppingDistance)
+        if (Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance)
         {
             isMoving = false;
             modelAnimator.SetBool("move", false);

@@ -3,6 +3,7 @@ using System.Timers;
 using UnityEngine;
 using System;
 
+[RequireComponent(typeof(Mother))]
 public class MotherController:MonoBehaviour
 {
     private IEnumerator feedRoutine;
@@ -28,7 +29,6 @@ public class MotherController:MonoBehaviour
 
     private MotherController()
     {
-        //StartCoroutine(FeedBaby(1));
     }
 
     void Start() {
@@ -40,8 +40,8 @@ public class MotherController:MonoBehaviour
             return;
         }
         lastInterval = Time.time;
-        //PrepareTimer();
     }
+
     private float lastInterval;
     private void FixedUpdate()
     {
@@ -51,7 +51,11 @@ public class MotherController:MonoBehaviour
         if (currentTime == 8 || currentTime == 12 || currentTime == 18)
         {
             //Debug.Log("currentTime: " + currentTime);
-            mother.Feed(FeedingCompleted);
+
+            if (!mother.isFeedingInProgress)
+            {
+                mother.Feed(FeedingCompleted);
+            }
         }
 
         float timeNow = Time.time;
@@ -67,28 +71,9 @@ public class MotherController:MonoBehaviour
         Debug.Log("FeedingCompleted");
     }
 
-    IEnumerator FeedBaby(float time)
-    {
-        yield return null;
-    }
-
-    private void PrepareTimer()
-    {
-        motherScheduler = new Timer(GREET_DURATION_MILLIS);
-        motherScheduler.AutoReset = true;
-        motherScheduler.Enabled = true;
-        motherScheduler.Elapsed += TimedGreetings;
-    }
-
     private void TimedGreetings(System.Object source, ElapsedEventArgs eventArg)
     {
         Debug.Log(eventArg.SignalTime);
         mother.Greet();
-    }
-
-    void OnDestroy()
-    {
-        //motherScheduler.Stop();
-        //motherScheduler.Dispose();
     }
 }
