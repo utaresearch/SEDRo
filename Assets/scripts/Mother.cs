@@ -101,8 +101,9 @@ public class Mother : MonoBehaviour
         else
         {
             //isFeeding = true;
-            modelAnimator.SetBool("greet", true);
-            StartCoroutine(OnCompleteFeedingAnimation(this.callback));
+            ikController.EnableIK(true, baby, babyMouth);
+
+            StartCoroutine(OnCompleteFeedingAnimation(callback));
         }
     }
 
@@ -119,7 +120,7 @@ public class Mother : MonoBehaviour
     IEnumerator OnCompleteFeedingAnimation(System.Action callback)
     {
         //yield return new WaitUntil(() => modelAnimator.GetCurrentAnimatorStateInfo(0).IsName("greet") && modelAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f);
-        yield return new WaitForSeconds(2.0f);
+        yield return new WaitForSeconds(3.0f);
 
         if (Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance)
         {

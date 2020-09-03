@@ -49,6 +49,7 @@ public class MotherController:MonoBehaviour
         float currentTime = EnvironmentController.Instance.GetCurrentHour();
 
         if (currentTime == 8 || currentTime == 12 || currentTime == 18)
+            //if (currentTime % 3 ==0)
         {
             //Debug.Log("currentTime: " + currentTime);
 

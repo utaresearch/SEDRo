@@ -29,6 +29,8 @@ public class MotherIkController : MonoBehaviour
 
     public Transform spineRotTarget = null;
 
+    public Transform rightWristRotTarget = null;
+
     public Transform hipObj = null;
 
     public Transform spineObj = null;
@@ -105,7 +107,9 @@ public class MotherIkController : MonoBehaviour
 
             lookObj = baby;
             babyMouthPos = babyMouth;
-            lookTarget.position = lookObj.position;
+            lookTarget.position = babyMouthPos.position;
+            rightHandTarget.position = babyMouthPos.position;
+            heightDiff = rightHandTarget.position.y - rightHandObj.position.y;
         }
         else
         {
@@ -166,19 +170,21 @@ public class MotherIkController : MonoBehaviour
     private float speed = 2f;
     private float totalAnimTime = 1.2f;
     private Vector3 hipTargetOldPos = Vector3.zero;
+    private float heightDiff = 0;
     private void LateUpdate()
     {
+        float t = (Time.time - startTime) / totalAnimTime * speed;
         if (ikActive)
         {
             
 
-            if (Mathf.Abs(rightHandTarget.position.y - rightHandObj.position.y) > 0.05f)
+            if (Mathf.Abs(heightDiff) > 0.05f)
             {
-                float hipHeight = Mathf.Clamp(hipTarget.position.y + (rightHandTarget.position.y - rightHandObj.position.y) , 0.5f, 1.2f);
-                Debug.Log("Hip Height: " + hipHeight+" Original: "+ hipOriginalPos.y);
-                Debug.Log("rightHandTarget.position.y: " + rightHandTarget.position.y);
-                Debug.Log("rightHandObj.position.y: " + rightHandObj.position.y);
-                Debug.Log("Diff: " + (rightHandTarget.position.y - rightHandObj.position.y));
+                float hipHeight = Mathf.Clamp(hipOriginalPos.y + Mathf.Lerp(0, heightDiff, t) , 0.5f, 1.2f);
+                //Debug.Log("Hip Height: " + hipHeight+" Original: "+ hipOriginalPos.y);
+                //Debug.Log("rightHandTarget.position.y: " + rightHandTarget.position.y);
+                //Debug.Log("rightHandObj.position.y: " + rightHandObj.position.y);
+                //Debug.Log("Diff: " + (rightHandTarget.position.y - rightHandObj.position.y));
 
                 //Debug.Log("Dir: " + relativePos);
                 //if(Mathf.Abs(hipTargetOldPos.y - hipHeight) >0.15)
@@ -187,10 +193,6 @@ public class MotherIkController : MonoBehaviour
                     hipTargetOldPos = hipTarget.position;
                 }
             }
-            lookTarget.position = babyMouthPos.position;
-            rightHandTarget.position = babyMouthPos.position;
-            
-
         }
 
         if (ikActive)
@@ -212,24 +214,26 @@ public class MotherIkController : MonoBehaviour
             relativePos = babyMouthPos.position - spineObj.position;
 
             //Vector3 relativePosAlongX = new Vector3(relativePos.x, relativePos.y, 0);
-            Vector3 relativePosAlongX = new Vector3(0, 0, relativePos.z);
-            //Vector3 relativePosAlongX = new Vector3(relativePos.x, 0, relativePos.y);
+            Vector3 relativePosAlongX = new Vector3(0, relativePos.y, relativePos.z);
+            relativePosAlongY = new Vector3(relativePos.x, 0, relativePos.y);
 
             // the second argument, upwards, defaults to Vector3.up
-            rotation = Quaternion.LookRotation(relativePosAlongX, Vector3.up);
+            Quaternion rotationX = Quaternion.LookRotation(relativePosAlongX, Vector3.up);
+            Quaternion rotationY = Quaternion.LookRotation(relativePosAlongY, Vector3.up);
             //hipTarget.rotation = rotation;
 
-            eulerRot = rotation.eulerAngles;
+            eulerRot.x = rotationX.eulerAngles.x;
+            eulerRot.y = rotationY.eulerAngles.y;
 
-            //eulerRot.z -= 90;
-            //eulerRot.y += 90;
             spineRotTarget.position = spineObj.position;
             spineRotTarget.rotation = Quaternion.Euler(eulerRot);
+
+            rightWristRotTarget.position = babyMouthPos.position;
         }
 
 
         //Debug.Log(ikActive);
-        float t = (Time.time-startTime)/totalAnimTime * speed;
+        
         if(ikActive && headRig.weight != 1)
         {
             float weight = Mathf.Lerp(0, 1, t);
