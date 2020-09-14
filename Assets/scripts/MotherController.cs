@@ -18,7 +18,8 @@ public class MotherController:MonoBehaviour
 
     private const long GREET_DURATION_MILLIS = GREET_DURATION_SECONDS * 1000;   // time in milliseconds.
 
-
+    [SerializeField]
+    private BabyAgent baby;
 
     public static bool IsInitialized
     {
@@ -69,7 +70,11 @@ public class MotherController:MonoBehaviour
 
     private void FeedingCompleted()
     {
-        Debug.Log("FeedingCompleted");
+        if (baby)
+        {
+            baby.feed();
+        }
+        Debug.Log("Feeding AnimCompleted");
     }
 
     private void TimedGreetings(System.Object source, ElapsedEventArgs eventArg)

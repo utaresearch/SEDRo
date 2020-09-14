@@ -73,6 +73,24 @@ public class BabyAgent : Agent
     EnvironmentParameters m_ResetParams;
 
 
+
+    private float stomachFoodLevel = 1;
+
+    /// <summary>
+    /// this is the amount of food that will be reduced every second.
+    /// Calculated in the following way.
+    /// 1 day = 86400 seconds
+    /// if feeding n times a day, then every 86400/n seconds, stomach should go empty, unless baby is fed again.
+    /// So, toreduce stomachFoodLevel=1, reduce 1/(86400/n) in every step.
+    /// initially n is 5 times a day.
+    /// </summary>
+    private float stomachFoodReductionRate = 1f / (10);
+    private const float MIN_FOOD_THRESHOLD = 0.1f;
+
+    private Renderer headRenderer;
+    private Color originalHeadColor;
+    private Color targetHeadColor;
+
     public override void Initialize()
     {
         m_JdController = GetComponent<JointDriveController>();
@@ -142,6 +160,11 @@ public class BabyAgent : Agent
         }
 
         m_ResetParams = Academy.Instance.EnvironmentParameters;
+
+        headRenderer = head.GetComponent<Renderer>();
+
+        originalHeadColor = headRenderer.material.color;
+        targetHeadColor = originalHeadColor;
 
         SetResetParameters();
 
@@ -231,8 +254,15 @@ public class BabyAgent : Agent
         SetResetParameters();
     }
 
+
+
     public override void OnActionReceived(float[] vectorAction)
     {
+        if(stomachFoodLevel < MIN_FOOD_THRESHOLD)
+        {
+            return;
+        }
+
         //float fps = 1.0f/Time.deltaTime;
         //Debug.Log("FPS: " + fps);
 
@@ -347,9 +377,33 @@ public class BabyAgent : Agent
 
     }
 
-    private void FixedUpdate()
+    private Color dangerRedColor = new Color(250/255f, 38/255f, 36/255f);
+    float startTime = 0;
+    float colorTransitionSpeed = 3;
+    private void Update()
     {
-        
+        stomachFoodLevel = Mathf.Max(0, stomachFoodLevel - stomachFoodReductionRate * Time.deltaTime);
+        Debug.Log("Reduce rate: " + stomachFoodReductionRate + ", stomach level: " + stomachFoodLevel);
+
+        if (stomachFoodLevel < MIN_FOOD_THRESHOLD)
+        {
+            //Debug.Log("Target color: " + targetHeadColor+" Ping Pong val: "+ Mathf.Abs(Mathf.Sin((Time.time - startTime) * colorTransitionSpeed)));
+
+            if (headRenderer)
+            {
+                headRenderer.material.color = Color.Lerp(originalHeadColor, dangerRedColor, Mathf.Abs(Mathf.Sin((Time.time - startTime) * colorTransitionSpeed)));
+            }
+        }
+        else
+        {
+            startTime = Time.time;
+            headRenderer.material.color = originalHeadColor;
+        }
+    }
+
+    public void feed()
+    {
+        stomachFoodLevel = 1;
     }
 
     public override void Heuristic(float[] actionsOut)
