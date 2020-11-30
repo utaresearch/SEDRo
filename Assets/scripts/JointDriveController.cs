@@ -95,7 +95,7 @@ namespace DAIVID
             currentNormalizedTorque.x = maxTorque.x == 0 ? 0 : x / maxTorque.x;
             currentNormalizedTorque.y = maxTorque.y == 0 ? 0 : y / maxTorque.y;
             currentNormalizedTorque.z = maxTorque.z == 0 ? 0 : z / maxTorque.z;
-            rb.AddRelativeTorque(x * maxTorque.x * JointDriveController.jointTorqueScale, y * maxTorque.y * JointDriveController.jointTorqueScale, z * maxTorque.z * JointDriveController.jointTorqueScale);
+            rb.AddRelativeTorque(x * maxTorque.x * thisJdController.jointTorqueScale, y * maxTorque.y * thisJdController.jointTorqueScale, z * maxTorque.z * thisJdController.jointTorqueScale);
 
         }
 
@@ -123,12 +123,22 @@ namespace DAIVID
         public float jointDampen;
         public float maxJointForceLimit;
 
-        public const float jointTorqueScale = 0.3f;
+        //Body joints strength controlling params
+        [Range(.3f, 7)]
+        public float jointTorqueScale = .3f;
+        private const float MIN_Joint_Torque_Scale = .3f;
+        private float MAX_Joint_Torque_Scale = 7f;
+
         float m_FacingDot;
 
         [HideInInspector] public Dictionary<Transform, BodyPart> bodyPartsDict = new Dictionary<Transform, BodyPart>();
 
         [HideInInspector] public List<BodyPart> bodyPartsList = new List<BodyPart>();
+
+        public void SetJointStrengthScale(float scale)
+        {
+            jointTorqueScale = Mathf.Min(MIN_Joint_Torque_Scale + Mathf.Clamp(scale, 0, 1) * (MAX_Joint_Torque_Scale - MIN_Joint_Torque_Scale), MAX_Joint_Torque_Scale);
+        }
 
         /// <summary>
         /// Create BodyPart object and add it to dictionary.

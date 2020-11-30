@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//using Unity.ML
 using Unity.MLAgents.Sensors;
 using Unity.MLAgents;
 using Unity.MLAgents.Policies;
 using DAIVID;
 
+[RequireComponent(typeof(AudioSource))]
 public class BabyAgent : Agent
 {
     [Header("Body parts")]
@@ -61,6 +63,9 @@ public class BabyAgent : Agent
     public Transform lil1R;
     public Transform lil2R;
 
+    [Header("Mother")]
+    public Mother mother;
+
     JointDriveController m_JdController;
     VisionController m_VisionController;
     //TouchSensorController m_TouchController;
@@ -75,6 +80,8 @@ public class BabyAgent : Agent
 
 
     private float stomachFoodLevel = 1;
+
+    private AudioSource babyVoice;
 
     /// <summary>
     /// this is the amount of food that will be reduced every second.
@@ -91,35 +98,38 @@ public class BabyAgent : Agent
     private Color originalHeadColor;
     private Color targetHeadColor;
 
+    private float bodyJointTorqueScale = 1f;
+
     public override void Initialize()
     {
         m_JdController = GetComponent<JointDriveController>();
-        m_JdController.SetupBodyPart(hips, new Vector3(0, 0, 0));
-        m_JdController.SetupBodyPart(chest, new Vector3(50, 50, 50));
-        m_JdController.SetupBodyPart(spine, new Vector3(50, 50, 50));
-        m_JdController.SetupBodyPart(head, new Vector3(20, 20, 20));
+        m_JdController.SetJointStrengthScale(EnvironmentController.Instance.GetCurrentDay()/365f); //Scaling strength upto 1 year.
+        m_JdController.SetupBodyPart(hips, new Vector3(0, 0, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(chest, new Vector3(12, 12, 12) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(spine, new Vector3(12, 12, 12) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(head, new Vector3(5, 5, 5) * bodyJointTorqueScale);
 
-        m_JdController.SetupBodyPart(thighL, new Vector3(50, 50, 0));
-        m_JdController.SetupBodyPart(shinL, new Vector3(50, 0, 0));
-        m_JdController.SetupBodyPart(footL, new Vector3(25, 25, 25));
-        m_JdController.SetupBodyPart(thighR, new Vector3(50, 50, 0));
-        m_JdController.SetupBodyPart(shinR, new Vector3(50, 0, 0));
-        m_JdController.SetupBodyPart(footR, new Vector3(25, 25, 25));
+        m_JdController.SetupBodyPart(thighL, new Vector3(12, 12, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(shinL, new Vector3(12, 0, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(footL, new Vector3(6, 6, 6) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(thighR, new Vector3(12, 12, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(shinR, new Vector3(12, 0, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(footR, new Vector3(6, 6, 6) * bodyJointTorqueScale);
 
-        m_JdController.SetupBodyPart(upperArmL, new Vector3(10, 5, 0));
-        m_JdController.SetupBodyPart(lowerArmL, new Vector3(5, 0, 0));
-        m_JdController.SetupBodyPart(handL, new Vector3(5, 5, 0));
-        m_JdController.SetupBodyPart(upperArmR, new Vector3(10, 5, 0));
-        m_JdController.SetupBodyPart(lowerArmR, new Vector3(5, 0, 0));
-        m_JdController.SetupBodyPart(handR, new Vector3(5, 5, 0));
+        m_JdController.SetupBodyPart(upperArmL, new Vector3(2, 1, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(lowerArmL, new Vector3(1, 0, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(handL, new Vector3(1, 1, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(upperArmR, new Vector3(2, 1, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(lowerArmR, new Vector3(1, 0, 0) * bodyJointTorqueScale);
+        m_JdController.SetupBodyPart(handR, new Vector3(1, 1, 0) * bodyJointTorqueScale);
 
         m_HipsRb = hips.GetComponent<Rigidbody>();
         m_ChestRb = chest.GetComponent<Rigidbody>();
         m_SpineRb = spine.GetComponent<Rigidbody>();
 
 
-        Vector3 finger1Torque = new Vector3(1, 0, 1);
-        Vector3 finger2Torque = new Vector3(1, 0, 0);
+        Vector3 finger1Torque = new Vector3(.25f, 0, .25f * bodyJointTorqueScale);
+        Vector3 finger2Torque = new Vector3(.25f, 0, 0 * bodyJointTorqueScale);
         //right fingers
         m_JdController.SetupBodyPart(thum1R, finger1Torque);
         m_JdController.SetupBodyPart(thum2R, finger2Torque);
@@ -176,6 +186,8 @@ public class BabyAgent : Agent
         {
             GetComponent<BehaviorParameters>().BrainParameters.VectorObservationSize += m_TouchController.GetSensorCounts(m_JdController.bodyPartsDict.Keys);
         }
+
+        babyVoice = GetComponent<AudioSource>();
     }
 
     public void SetTorsoMass()
@@ -215,6 +227,13 @@ public class BabyAgent : Agent
         if (m_TouchController != null)
         {
             sensor.AddObservation(m_TouchController.CollectTouchUpdatesForBodyParts(m_JdController.bodyPartsDict.Keys));
+        }
+        sensor.AddObservation(stomachFoodLevel);
+        if (mother)
+        {
+            float[] voice = mother.getVoiceVector();
+            sensor.AddObservation(voice);
+
         }
     }
 
@@ -258,10 +277,10 @@ public class BabyAgent : Agent
 
     public override void OnActionReceived(float[] vectorAction)
     {
-        if(stomachFoodLevel < MIN_FOOD_THRESHOLD)
-        {
-            return;
-        }
+        //if(stomachFoodLevel < MIN_FOOD_THRESHOLD)
+        //{
+        //    return;
+        //}
 
         //float fps = 1.0f/Time.deltaTime;
         //Debug.Log("FPS: " + fps);
@@ -375,6 +394,9 @@ public class BabyAgent : Agent
 
         m_VisionController.SetEyeRotation(eyeL, eyeR, vectorAction[++i], vectorAction[++i], Mathf.Abs(vectorAction[++i]));
 
+        //Cry vector at 77th index
+        //Cry(vectorAction[++i] > 0);
+
     }
 
     private Color dangerRedColor = new Color(250/255f, 38/255f, 36/255f);
@@ -383,10 +405,19 @@ public class BabyAgent : Agent
     private void Update()
     {
         stomachFoodLevel = Mathf.Max(0, stomachFoodLevel - stomachFoodReductionRate * Time.deltaTime);
-        Debug.Log("Reduce rate: " + stomachFoodReductionRate + ", stomach level: " + stomachFoodLevel);
+        //Debug.Log("Reduce rate: " + stomachFoodReductionRate + ", stomach level: " + stomachFoodLevel);
 
-        if (stomachFoodLevel < MIN_FOOD_THRESHOLD)
+        //Cry(stomachFoodLevel < MIN_FOOD_THRESHOLD);
+    }
+
+    void Cry(bool enable)
+    {
+        if (enable)
         {
+            if (!babyVoice.isPlaying)
+            {
+                babyVoice.Play();
+            }
             //Debug.Log("Target color: " + targetHeadColor+" Ping Pong val: "+ Mathf.Abs(Mathf.Sin((Time.time - startTime) * colorTransitionSpeed)));
 
             if (headRenderer)
@@ -396,40 +427,63 @@ public class BabyAgent : Agent
         }
         else
         {
-            startTime = Time.time;
-            headRenderer.material.color = originalHeadColor;
+            StartCoroutine(StopCryingDelayed());
         }
+
+    }
+
+    IEnumerator StopCryingDelayed()
+    {
+        yield return new WaitForSeconds(5);// Until(() => Utility.Vector2DDistance(baby.position, transform.position) <= agent.stoppingDistance);
+
+        startTime = Time.time;
+        headRenderer.material.color = originalHeadColor;
+        babyVoice.Stop();
     }
 
     public void feed()
     {
         stomachFoodLevel = 1;
+        if (babyVoice.isPlaying)
+        {
+            babyVoice.Stop();
+        }
     }
-
+    bool flag = true;
     public override void Heuristic(float[] actionsOut)
     {
         //Debug.Log("Called hurestic");
 
-        for (int i = 0; i < 40; i++)
+        for (int i = 0; i < 27; i++)
         {
             actionsOut[i] = Random.Range(-1.0f, 1f);
         }
         //Hands
-        for (int i = 40; i < 74; i++)
+        for (int i = 27; i < 61; i++)
         {
             actionsOut[i] = Random.Range(-1.0f, 1.0f); //1;
         }
         //Eyes
-        for (int i = 74; i < 76; i++)
+        for (int i = 61; i < 63; i++)
         {
             actionsOut[i] = Random.Range(-1.0f, 1.0f);
         }
 
-        actionsOut[76] = Random.Range(0f, 1.0f);  // Focal distance
+        actionsOut[63] = Random.Range(0f, 1.0f);  // Focal distance
+
+        //actionsOut[64] = Random.Range(0, 2);  // Cry vector
+        //if (flag)
+        //{
+        //    actionsOut[64] = 1;
+        //    flag = false;
+        //}
+        //else
+        //{
+        //    actionsOut[64] = 0;
+        //}
         //Debug.Log("Heuristic");
 
         //action[39] = -1;
         //Time.timeScale = 0.3f;
     }
 }
-

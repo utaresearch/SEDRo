@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using DAIVID;
 
 public class MotherIkController : MonoBehaviour
 {
@@ -79,13 +80,13 @@ public class MotherIkController : MonoBehaviour
         }
     }
 
-    private Transform lookObj;
-
     private Transform babyMouthPos;
+    private Mother.ActionType actionType;
     private float startTime = 0;
-    public void EnableIK(bool enabled, Transform baby, Transform babyMouth)
+    public void EnableIK(bool enabled, Transform target, Mother.ActionType actionType)
     {
         ikActive = enabled;
+        this.actionType = actionType;
         if (ikActive)
         {
             //headRig.weight = 1;
@@ -105,10 +106,9 @@ public class MotherIkController : MonoBehaviour
             //leftFootTarget.rotation = leftFootObj.rotation;
             //rightFootTarget.rotation = rightFootObj.rotation;
 
-            lookObj = baby;
-            babyMouthPos = babyMouth;
-            lookTarget.position = babyMouthPos.position;
-            rightHandTarget.position = babyMouthPos.position;
+            babyMouthPos = target;
+            lookTarget.position = target.position;
+            rightHandTarget.position = target.position;
             heightDiff = rightHandTarget.position.y - rightHandObj.position.y;
         }
         else
@@ -118,6 +118,17 @@ public class MotherIkController : MonoBehaviour
             //armRig.weight = 0;
             //feetRig.weight = 0;
             //hipRig.weight = 0;
+        }
+    }
+    public void EnableIK(bool enabled, Transform target, Transform handTarget, Mother.ActionType actionType)
+    {
+        EnableIK(enabled, target, actionType);
+        if (ikActive)
+        {
+            babyMouthPos = handTarget;
+            lookTarget.position = babyMouthPos.position;
+            rightHandTarget.position = babyMouthPos.position;
+            heightDiff = rightHandTarget.position.y - rightHandObj.position.y;
         }
     }
 
@@ -173,14 +184,14 @@ public class MotherIkController : MonoBehaviour
     private float heightDiff = 0;
     private void LateUpdate()
     {
-        float t = (Time.time - startTime) / totalAnimTime * speed;
+        float iterpolatedTime = (Time.time - startTime) / totalAnimTime * speed;
         if (ikActive)
         {
             
 
             if (Mathf.Abs(heightDiff) > 0.05f)
             {
-                float hipHeight = Mathf.Clamp(hipOriginalPos.y + Mathf.Lerp(0, heightDiff, t) , 0.5f, 1.2f);
+                float hipHeight = Mathf.Clamp(hipOriginalPos.y + Mathf.Lerp(0, heightDiff, iterpolatedTime) , 0.5f, 1.2f);
                 //Debug.Log("Hip Height: " + hipHeight+" Original: "+ hipOriginalPos.y);
                 //Debug.Log("rightHandTarget.position.y: " + rightHandTarget.position.y);
                 //Debug.Log("rightHandObj.position.y: " + rightHandObj.position.y);
@@ -223,10 +234,10 @@ public class MotherIkController : MonoBehaviour
             //hipTarget.rotation = rotation;
 
             eulerRot.x = rotationX.eulerAngles.x;
-            eulerRot.y = rotationY.eulerAngles.y;
-
+            eulerRot.y = 0;// rotationY.eulerAngles.y;
+            eulerRot.z = 0;
             spineRotTarget.position = spineObj.position;
-            spineRotTarget.rotation = Quaternion.Euler(eulerRot);
+            spineRotTarget.localRotation = Quaternion.Euler(eulerRot);
 
             rightWristRotTarget.position = babyMouthPos.position;
         }
@@ -236,15 +247,21 @@ public class MotherIkController : MonoBehaviour
         
         if(ikActive && headRig.weight != 1)
         {
-            float weight = Mathf.Lerp(0, 1, t);
+            float weight = Mathf.Lerp(0, 1, iterpolatedTime);
             headRig.weight = weight;
             armRig.weight = weight;
             feetRig.weight = weight;
             hipRig.weight = weight;
             hipRotRig.weight = weight;
+            if(this.actionType == Mother.ActionType.ShowToy)
+            {
+                feetRig.weight = 0;
+                hipRig.weight = 0;
+                hipRotRig.weight = 0;
+            }
         } else if (!ikActive && headRig.weight != 0)
         {
-            float weight = Mathf.Lerp(1, 0, t);
+            float weight = Mathf.Lerp(1, 0, iterpolatedTime);
             headRig.weight = weight;
             armRig.weight = weight;
             feetRig.weight = weight;

@@ -2,6 +2,7 @@
 using System.Timers;
 using UnityEngine;
 using System;
+using DAIVID;
 
 [RequireComponent(typeof(Mother))]
 public class MotherController:MonoBehaviour
@@ -49,17 +50,28 @@ public class MotherController:MonoBehaviour
 
         float currentTime = EnvironmentController.Instance.GetCurrentHour();
 
-        if (currentTime == 8 || currentTime == 12 || currentTime == 18)
+        if (currentTime == 8 || currentTime == 12 || currentTime == 21)
             //if (currentTime % 3 ==0)
         {
-            //Debug.Log("currentTime: " + currentTime);
+            Debug.Log("currentTime: " + currentTime);
 
             if (!mother.isFeedingInProgress)
             {
+                //mother.BringToy(ToyShowingCompleted);
                 mother.Feed(FeedingCompleted);
             }
         }
+        if (currentTime == 16)
+        //if (currentTime % 3 ==0)
+        {
+            Debug.Log("currentTime: " + currentTime);
 
+            if (!mother.isMotherBusy)
+            {
+                mother.BringToy(ToyShowingCompleted);
+                //mother.Feed(FeedingCompleted);
+            }
+        }
         float timeNow = Time.time;
         if (timeNow > lastInterval + GREET_DURATION_SECONDS)
         {
@@ -67,7 +79,10 @@ public class MotherController:MonoBehaviour
             lastInterval = timeNow;
         }
     }
-
+    private void ToyShowingCompleted()
+    {
+        Debug.Log("Toy display AnimCompleted");
+    }
     private void FeedingCompleted()
     {
         if (baby)

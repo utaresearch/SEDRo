@@ -35,7 +35,7 @@ public class EnvironmentController
 
     private UnityEngine.Object _lock = new UnityEngine.Object();
 
-    private float timeMultiplier = 24.0f / 60.0f; // 24.0f / 86400;
+    private float timeMultiplier = 24.0f / (60.0f * 2); // 24.0f / 86400;
 
     /// <summary>
     /// Time will be in 24 hour format and minutes will be fraction after the hour i.e.time = hour + minutes/60 </param>
