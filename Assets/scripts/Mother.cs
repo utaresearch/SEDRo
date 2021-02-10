@@ -86,7 +86,7 @@ namespace DAIVID
                 Debug.Log("Mother speaking voice: " + motherSpeakingCharacter);
             }
 
-            if (Utility.Vector2DDistance(destination.position, transform.position) <= agent.stoppingDistance)
+            if (destination && Utility.Vector2DDistance(destination.position, transform.position) <= agent.stoppingDistance)
             {
                 //Debug.Log(Utility.Vector2DDistance(baby.position, transform.position) + " +updating+ " + agent.stoppingDistance);
                 agent.isStopped = true;

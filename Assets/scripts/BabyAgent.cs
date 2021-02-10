@@ -67,6 +67,7 @@ public class BabyAgent : Agent
     public Mother mother;
 
     JointDriveController m_JdController;
+    private EnvironmentCommunicationChannel m_envCommChannel;
     VisionController m_VisionController;
     //TouchSensorController m_TouchController;
     TouchSensorControllerV2 m_TouchController;
@@ -98,61 +99,10 @@ public class BabyAgent : Agent
     private Color originalHeadColor;
     private Color targetHeadColor;
 
-    private float bodyJointTorqueScale = 1f;
-
     public override void Initialize()
     {
-        m_JdController = GetComponent<JointDriveController>();
-        m_JdController.SetJointStrengthScale(EnvironmentController.Instance.GetCurrentDay()/365f); //Scaling strength upto 1 year.
-        m_JdController.SetupBodyPart(hips, new Vector3(0, 0, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(chest, new Vector3(12, 12, 12) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(spine, new Vector3(12, 12, 12) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(head, new Vector3(5, 5, 5) * bodyJointTorqueScale);
 
-        m_JdController.SetupBodyPart(thighL, new Vector3(12, 12, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(shinL, new Vector3(12, 0, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(footL, new Vector3(6, 6, 6) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(thighR, new Vector3(12, 12, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(shinR, new Vector3(12, 0, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(footR, new Vector3(6, 6, 6) * bodyJointTorqueScale);
-
-        m_JdController.SetupBodyPart(upperArmL, new Vector3(2, 1, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(lowerArmL, new Vector3(1, 0, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(handL, new Vector3(1, 1, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(upperArmR, new Vector3(2, 1, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(lowerArmR, new Vector3(1, 0, 0) * bodyJointTorqueScale);
-        m_JdController.SetupBodyPart(handR, new Vector3(1, 1, 0) * bodyJointTorqueScale);
-
-        m_HipsRb = hips.GetComponent<Rigidbody>();
-        m_ChestRb = chest.GetComponent<Rigidbody>();
-        m_SpineRb = spine.GetComponent<Rigidbody>();
-
-
-        Vector3 finger1Torque = new Vector3(.25f, 0, .25f * bodyJointTorqueScale);
-        Vector3 finger2Torque = new Vector3(.25f, 0, 0 * bodyJointTorqueScale);
-        //right fingers
-        m_JdController.SetupBodyPart(thum1R, finger1Torque);
-        m_JdController.SetupBodyPart(thum2R, finger2Torque);
-        m_JdController.SetupBodyPart(ind1R, finger1Torque);
-        m_JdController.SetupBodyPart(ind2R, finger2Torque);
-        m_JdController.SetupBodyPart(mid1R, finger1Torque);
-        m_JdController.SetupBodyPart(mid2R, finger2Torque);
-        m_JdController.SetupBodyPart(rin1R, finger1Torque);
-        m_JdController.SetupBodyPart(rin2R, finger2Torque);
-        m_JdController.SetupBodyPart(lil1R, finger1Torque);
-        m_JdController.SetupBodyPart(lil2R, finger2Torque);
-
-        //left fingers
-        m_JdController.SetupBodyPart(thum1L, finger1Torque);
-        m_JdController.SetupBodyPart(thum2L, finger2Torque);
-        m_JdController.SetupBodyPart(ind1L, finger1Torque);
-        m_JdController.SetupBodyPart(ind2L, finger2Torque);
-        m_JdController.SetupBodyPart(mid1L, finger1Torque);
-        m_JdController.SetupBodyPart(mid2L, finger2Torque);
-        m_JdController.SetupBodyPart(rin1L, finger1Torque);
-        m_JdController.SetupBodyPart(rin2L, finger2Torque);
-        m_JdController.SetupBodyPart(lil1L, finger1Torque);
-        m_JdController.SetupBodyPart(lil2L, finger2Torque);
+        SetupBodyParts();
 
         m_VisionController = GetComponent<VisionController>();
         if (m_VisionController == null)
@@ -178,6 +128,181 @@ public class BabyAgent : Agent
 
         SetResetParameters();
 
+    }
+
+    private void SetupBodyParts()
+    {
+        m_JdController = GetComponent<JointDriveController>();
+
+        m_envCommChannel = EnvironmentCommunicationChannel.Instance;
+        Dictionary<string, float> bodyConfig = m_envCommChannel.GetAgentBodyConfig();
+        if (bodyConfig != null)
+        {
+            m_JdController.SetJointStrengthScale(EnvironmentController.Instance.GetCurrentDay() / 365f); //Scaling strength upto 1 year.
+            m_JdController.SetupBodyPart(hips, new Vector3(0, 0, 0));
+            Vector3 bodyTorque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.chestX) ? bodyConfig[CommMessageKeys.chestX] : 0,
+                y = bodyConfig.ContainsKey(CommMessageKeys.chestX) ? bodyConfig[CommMessageKeys.chestY] : 0,
+                z = bodyConfig.ContainsKey(CommMessageKeys.chestX) ? bodyConfig[CommMessageKeys.chestZ] : 0
+            };
+            m_JdController.SetupBodyPart(chest, bodyTorque);
+
+            bodyTorque.x = bodyConfig.ContainsKey(CommMessageKeys.spineX) ? bodyConfig[CommMessageKeys.spineX] : 0;
+            bodyTorque.y = bodyConfig.ContainsKey(CommMessageKeys.spineY) ? bodyConfig[CommMessageKeys.spineY] : 0;
+            bodyTorque.z = bodyConfig.ContainsKey(CommMessageKeys.spineZ) ? bodyConfig[CommMessageKeys.spineZ] : 0;
+            m_JdController.SetupBodyPart(spine, bodyTorque);
+
+            bodyTorque.x = bodyConfig.ContainsKey(CommMessageKeys.headX) ? bodyConfig[CommMessageKeys.headX] : 0;
+            bodyTorque.y = bodyConfig.ContainsKey(CommMessageKeys.headY) ? bodyConfig[CommMessageKeys.headY] : 0;
+            bodyTorque.z = bodyConfig.ContainsKey(CommMessageKeys.headZ) ? bodyConfig[CommMessageKeys.headZ] : 0;
+            m_JdController.SetupBodyPart(head, bodyTorque);
+
+            Vector3 thighTorque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.thighX) ? bodyConfig[CommMessageKeys.thighX] : 0,
+                y = bodyConfig.ContainsKey(CommMessageKeys.thighY) ? bodyConfig[CommMessageKeys.thighY] : 0
+            };
+
+            Vector3 shinTorque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.shinX) ? bodyConfig[CommMessageKeys.shinX] : 0
+            };
+
+            Vector3 footTorque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.footX) ? bodyConfig[CommMessageKeys.footX] : 0,
+                y = bodyConfig.ContainsKey(CommMessageKeys.footY) ? bodyConfig[CommMessageKeys.footY] : 0,
+                z = bodyConfig.ContainsKey(CommMessageKeys.footZ) ? bodyConfig[CommMessageKeys.footZ] : 0
+            };
+
+            m_JdController.SetupBodyPart(thighL, thighTorque);
+            m_JdController.SetupBodyPart(shinL, shinTorque);
+            m_JdController.SetupBodyPart(footL, footTorque);
+            m_JdController.SetupBodyPart(thighR, thighTorque);
+            m_JdController.SetupBodyPart(shinR, shinTorque);
+            m_JdController.SetupBodyPart(footR, footTorque);
+
+            Vector3 upperArmTorque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.upperArmX) ? bodyConfig[CommMessageKeys.upperArmX] : 0,
+                y = bodyConfig.ContainsKey(CommMessageKeys.upperArmY) ? bodyConfig[CommMessageKeys.upperArmY] : 0
+            };
+
+            Vector3 lowerArmTorque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.lowerArmX) ? bodyConfig[CommMessageKeys.lowerArmX] : 0
+            };
+
+            Vector3 handTorque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.handX) ? bodyConfig[CommMessageKeys.handX] : 0,
+                y = bodyConfig.ContainsKey(CommMessageKeys.handY) ? bodyConfig[CommMessageKeys.handY] : 0
+            };
+
+
+            m_JdController.SetupBodyPart(upperArmL, upperArmTorque);
+            m_JdController.SetupBodyPart(lowerArmL, lowerArmTorque);
+            m_JdController.SetupBodyPart(handL, handTorque);
+            m_JdController.SetupBodyPart(upperArmR, upperArmTorque);
+            m_JdController.SetupBodyPart(lowerArmR, lowerArmTorque);
+            m_JdController.SetupBodyPart(handR, handTorque);
+
+            Vector3 finger1Torque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.fingerUpperX) ? bodyConfig[CommMessageKeys.fingerUpperX] : 0,
+                z = bodyConfig.ContainsKey(CommMessageKeys.fingerUpperZ) ? bodyConfig[CommMessageKeys.fingerUpperZ] : 0
+            };
+
+            Vector3 finger2Torque = new Vector3(0, 0, 0)
+            {
+                x = bodyConfig.ContainsKey(CommMessageKeys.fingerLowerX) ? bodyConfig[CommMessageKeys.fingerLowerX] : 0
+            };
+
+            //right fingers
+            m_JdController.SetupBodyPart(thum1R, finger1Torque);
+            m_JdController.SetupBodyPart(thum2R, finger2Torque);
+            m_JdController.SetupBodyPart(ind1R, finger1Torque);
+            m_JdController.SetupBodyPart(ind2R, finger2Torque);
+            m_JdController.SetupBodyPart(mid1R, finger1Torque);
+            m_JdController.SetupBodyPart(mid2R, finger2Torque);
+            m_JdController.SetupBodyPart(rin1R, finger1Torque);
+            m_JdController.SetupBodyPart(rin2R, finger2Torque);
+            m_JdController.SetupBodyPart(lil1R, finger1Torque);
+            m_JdController.SetupBodyPart(lil2R, finger2Torque);
+
+            //left fingers
+            m_JdController.SetupBodyPart(thum1L, finger1Torque);
+            m_JdController.SetupBodyPart(thum2L, finger2Torque);
+            m_JdController.SetupBodyPart(ind1L, finger1Torque);
+            m_JdController.SetupBodyPart(ind2L, finger2Torque);
+            m_JdController.SetupBodyPart(mid1L, finger1Torque);
+            m_JdController.SetupBodyPart(mid2L, finger2Torque);
+            m_JdController.SetupBodyPart(rin1L, finger1Torque);
+            m_JdController.SetupBodyPart(rin2L, finger2Torque);
+            m_JdController.SetupBodyPart(lil1L, finger1Torque);
+            m_JdController.SetupBodyPart(lil2L, finger2Torque);
+        }
+        else
+        {
+            SetupDefaultBodyTourques();
+        }        
+
+        m_HipsRb = hips.GetComponent<Rigidbody>();
+        m_ChestRb = chest.GetComponent<Rigidbody>();
+        m_SpineRb = spine.GetComponent<Rigidbody>();
+    }
+
+    private void SetupDefaultBodyTourques()
+    {
+        m_JdController.SetJointStrengthScale(EnvironmentController.Instance.GetCurrentDay() / 365f); //Scaling strength upto 1 year.
+        m_JdController.SetupBodyPart(hips, new Vector3(0, 0, 0));
+        m_JdController.SetupBodyPart(chest, new Vector3(12, 12, 12));
+        m_JdController.SetupBodyPart(spine, new Vector3(12, 12, 12));
+        m_JdController.SetupBodyPart(head, new Vector3(5, 5, 5));
+
+        m_JdController.SetupBodyPart(thighL, new Vector3(12, 12, 0));
+        m_JdController.SetupBodyPart(shinL, new Vector3(12, 0, 0));
+        m_JdController.SetupBodyPart(footL, new Vector3(6, 6, 6));
+        m_JdController.SetupBodyPart(thighR, new Vector3(12, 12, 0));
+        m_JdController.SetupBodyPart(shinR, new Vector3(12, 0, 0));
+        m_JdController.SetupBodyPart(footR, new Vector3(6, 6, 6));
+
+        m_JdController.SetupBodyPart(upperArmL, new Vector3(2, 1, 0));
+        m_JdController.SetupBodyPart(lowerArmL, new Vector3(1, 0, 0));
+        m_JdController.SetupBodyPart(handL, new Vector3(1, 1, 0));
+        m_JdController.SetupBodyPart(upperArmR, new Vector3(2, 1, 0));
+        m_JdController.SetupBodyPart(lowerArmR, new Vector3(1, 0, 0));
+        m_JdController.SetupBodyPart(handR, new Vector3(1, 1, 0));
+
+        /*
+         * Total 30 DoF for fingers
+         */
+        Vector3 finger1Torque = new Vector3(.25f, 0, .25f);
+        Vector3 finger2Torque = new Vector3(.25f, 0, 0);
+        //right fingers
+        m_JdController.SetupBodyPart(thum1R, finger1Torque);
+        m_JdController.SetupBodyPart(thum2R, finger2Torque);
+        m_JdController.SetupBodyPart(ind1R, finger1Torque);
+        m_JdController.SetupBodyPart(ind2R, finger2Torque);
+        m_JdController.SetupBodyPart(mid1R, finger1Torque);
+        m_JdController.SetupBodyPart(mid2R, finger2Torque);
+        m_JdController.SetupBodyPart(rin1R, finger1Torque);
+        m_JdController.SetupBodyPart(rin2R, finger2Torque);
+        m_JdController.SetupBodyPart(lil1R, finger1Torque);
+        m_JdController.SetupBodyPart(lil2R, finger2Torque);
+
+        //left fingers
+        m_JdController.SetupBodyPart(thum1L, finger1Torque);
+        m_JdController.SetupBodyPart(thum2L, finger2Torque);
+        m_JdController.SetupBodyPart(ind1L, finger1Torque);
+        m_JdController.SetupBodyPart(ind2L, finger2Torque);
+        m_JdController.SetupBodyPart(mid1L, finger1Torque);
+        m_JdController.SetupBodyPart(mid2L, finger2Torque);
+        m_JdController.SetupBodyPart(rin1L, finger1Torque);
+        m_JdController.SetupBodyPart(rin2L, finger2Torque);
+        m_JdController.SetupBodyPart(lil1L, finger1Torque);
+        m_JdController.SetupBodyPart(lil2L, finger2Torque);
     }
 
     private void Start()

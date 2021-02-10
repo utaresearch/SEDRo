@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using Unity.MLAgents;
-
+using TinyJson;
 public class ExternalCommunicator : MonoBehaviour
 {
     static Lazy<ExternalCommunicator> s_Lazy = new Lazy<ExternalCommunicator>(() => new ExternalCommunicator());
@@ -27,12 +27,12 @@ public class ExternalCommunicator : MonoBehaviour
         public static string gameDay = "game_day";
         public static string gameTimeOfDay = "game_time_of_day";
         public static string sceneToLoad = "scene_to_load";
+        public static string agentConfig = "agent_config";
     }
 
     private void Awake()
     {
         environmentParams = Academy.Instance.EnvironmentParameters;
-
         setEnvironmentParams();
     }
 
@@ -40,7 +40,7 @@ public class ExternalCommunicator : MonoBehaviour
     {
         float scene = environmentParams.GetWithDefault(MessageParamas.sceneToLoad, 0);
         float day = environmentParams.GetWithDefault(MessageParamas.gameDay, 0);
-        float time = environmentParams.GetWithDefault(MessageParamas.gameTimeOfDay, 1200);
+        float time = environmentParams.GetWithDefault(MessageParamas.gameTimeOfDay, 000);
         Debug.Log("Time of day set from python: " + time);
 
         time = (float)(Math.Floor(time / 100f)+ time % 100 / 60);
@@ -48,7 +48,5 @@ public class ExternalCommunicator : MonoBehaviour
         EnvironmentController.Instance.gameStartDay = day;
         EnvironmentController.Instance.gameStartTime = time;
         Debug.Log("Time of day: " + time);
-        //LightController lightController = FindObjectOfType<LightController>();
-        //lightController.SetTimeOfDay(time);
     }
 }

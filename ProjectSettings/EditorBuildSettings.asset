@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MainScene.unity
     guid: 4d26ed594ea3647ed94ac2d560f2e0b3
+  - enabled: 1
+    path: Assets/Scenes/Paper_Rod_Experiment.unity
+    guid: 03c032ba603b040ca8a6cc03b3b71a4d
+  - enabled: 1
+    path: Assets/Scenes/Fetus.unity
+    guid: 77ddbed997dd50a4d80ac5dc0817d118
   m_configObjects: {}

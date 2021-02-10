@@ -1,9 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System;
-using System.Threading;
-
+using Unity.MLAgents;
 
 public class EnvironmentController
 {
@@ -20,6 +18,34 @@ public class EnvironmentController
     {
         //StartCoroutine(FeedBaby(1));
     }
+    public static class GameScene
+    {
+        public static string Main = "MainScene";
+        public static string PaperRod = "Paper_Rod_Experiment";
+        public static string Fetus = "Fetus";
+    }
+
+    private string currentGameScene = GameScene.Main;
+
+    public void ChangeGameScene(int scene)
+    {
+        //Debug.Log(SceneManager.GetActiveScene().name);
+        if (scene == 3.0 && !SceneManager.GetActiveScene().name.ToLower().Equals(GameScene.Fetus.ToLower()))
+        {
+            //Academy.Instance.Dispose();
+            SceneManager.LoadScene(GameScene.Fetus, LoadSceneMode.Single);
+        }
+        else if (scene == 2.0 && !SceneManager.GetActiveScene().name.ToLower().Equals(GameScene.PaperRod.ToLower()))
+        {
+            //Academy.Instance.Dispose();
+            SceneManager.LoadScene(GameScene.PaperRod, LoadSceneMode.Single);
+        }
+        else if (!SceneManager.GetActiveScene().name.Equals(GameScene.Main))
+        {
+            //Academy.Instance.Dispose();
+            SceneManager.LoadScene(GameScene.Main, LoadSceneMode.Single);
+        }
+    }
 
     public float gameStartDay;
     /// <summary>
@@ -33,9 +59,7 @@ public class EnvironmentController
     /// </summary>
     private float gameCurrentTime;
 
-    private UnityEngine.Object _lock = new UnityEngine.Object();
-
-    private float timeMultiplier = 24.0f / (60.0f * 2); // 24.0f / 86400;
+    private readonly float timeMultiplier = 24.0f / (60.0f * 2); // 24.0f / 86400;
 
     /// <summary>
     /// Time will be in 24 hour format and minutes will be fraction after the hour i.e.time = hour + minutes/60 </param>
