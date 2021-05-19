@@ -136,6 +136,8 @@ public class BabyAgent : Agent
 
         m_envCommChannel = EnvironmentCommunicationChannel.Instance;
         Dictionary<string, float> bodyConfig = m_envCommChannel.GetAgentBodyConfig();
+        m_envCommChannel.SendExtraPython("Body config received");
+
         if (bodyConfig != null)
         {
             m_JdController.SetJointStrengthScale(EnvironmentController.Instance.GetCurrentDay() / 365f); //Scaling strength upto 1 year.
@@ -348,18 +350,18 @@ public class BabyAgent : Agent
         //grab object status
         //AddVectorObs(m_GrabObservation.CollectGrabstatus());
 
-        //Touch sensor status
+        ////Touch sensor status
         if (m_TouchController != null)
         {
             sensor.AddObservation(m_TouchController.CollectTouchUpdatesForBodyParts(m_JdController.bodyPartsDict.Keys));
         }
-        sensor.AddObservation(stomachFoodLevel);
-        if (mother)
-        {
-            float[] voice = mother.getVoiceVector();
-            sensor.AddObservation(voice);
+        //sensor.AddObservation(stomachFoodLevel);
+        //if (mother)
+        //{
+        //    float[] voice = mother.getVoiceVector();
+        //    sensor.AddObservation(voice);
 
-        }
+        //}
     }
 
     /// <summary>

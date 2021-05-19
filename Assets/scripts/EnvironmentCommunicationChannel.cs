@@ -156,6 +156,16 @@ namespace DAIVID
             Debug.Log("Time of day: " + time);
         }
 
+        public void SendExtraPython(string msg)
+        {
+            
+                using (var msgOut = new OutgoingMessage())
+                {
+                    msgOut.WriteString(msg);
+                    QueueMessageToSend(msgOut);
+                }
+        }
+
         public void SendDebugStatementToPython(string logString, string stackTrace, LogType type)
         {
             if (type == LogType.Error)
