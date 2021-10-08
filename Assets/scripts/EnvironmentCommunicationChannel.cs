@@ -125,6 +125,7 @@ namespace DAIVID
             var receivedString = msg.ReadString();
             Debug.Log("From Python : " + receivedString);
 
+
             Dictionary<string, string> msgDict = receivedString.FromJson<Dictionary<string, string>>();
 
             if (msgDict.ContainsKey(CommMessageKeys.envConfig))
@@ -156,12 +157,13 @@ namespace DAIVID
             Debug.Log("Time of day: " + time);
         }
 
-        public void SendExtraPython(string msg)
+        public void SendInfoOutside(object msg)
         {
-            
-                using (var msgOut = new OutgoingMessage())
+            string json = msg.ToJson();
+
+            using (var msgOut = new OutgoingMessage())
                 {
-                    msgOut.WriteString(msg);
+                    msgOut.WriteString(json);
                     QueueMessageToSend(msgOut);
                 }
         }
@@ -174,7 +176,7 @@ namespace DAIVID
                 using (var msgOut = new OutgoingMessage())
                 {
                     msgOut.WriteString(stringToSend);
-                    QueueMessageToSend(msgOut);
+                    //QueueMessageToSend(msgOut);
                 }
             }
         }

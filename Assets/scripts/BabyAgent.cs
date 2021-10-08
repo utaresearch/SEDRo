@@ -136,7 +136,7 @@ public class BabyAgent : Agent
 
         m_envCommChannel = EnvironmentCommunicationChannel.Instance;
         Dictionary<string, float> bodyConfig = m_envCommChannel.GetAgentBodyConfig();
-        m_envCommChannel.SendExtraPython("Body config received");
+        m_envCommChannel.SendInfoOutside("Body config received");
 
         if (bodyConfig != null)
         {
